@@ -1,0 +1,83 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ExhibitorCard from '../../components/ExhibitorCard.astro';
+import { exhibitors } from '../../lib/exhibitors';
+
+const categories = [
+  ...new Set(exhibitors.map((item) => item.category)),
+].sort((a, b) => a.localeCompare(b, 'es'));
+---
+
+<Layout
+  title="Emprendimientos participantes | Stellar Pulse"
+  description="Explora el directorio de emprendimientos participantes de Stellar Pulse."
+>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">
+        Directorio de participantes
+      </span>
+
+      <h1>
+        Conoce a los<br />
+        <span>emprendimientos.</span>
+      </h1>
+
+      <p>
+        Explora las marcas participantes, descubre sus productos
+        y encuentra nuevas opciones para ti.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <h2>Todos los participantes</h2>
+
+          <p>
+            {exhibitors.length} emprendimientos publicados.
+          </p>
+        </div>
+      </div>
+
+      {
+        categories.length > 0 && (
+          <div
+            class="category-list"
+            aria-label="Categorías disponibles"
+          >
+            {categories.map((category) => (
+              <span class="category">{category}</span>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        exhibitors.length > 0 ? (
+          <div class="exhibitor-grid">
+            {exhibitors.map((item) => (
+              <ExhibitorCard item={item} />
+            ))}
+          </div>
+        ) : (
+          <div class="empty-state">
+            Estamos preparando el directorio.
+            Pronto podrás conocer a los emprendimientos participantes.
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+</style>

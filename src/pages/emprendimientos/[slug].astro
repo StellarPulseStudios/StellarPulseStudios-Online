@@ -1,0 +1,866 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { exhibitors } from '../../lib/exhibitors';
+
+import type { Exhibitor } from '../../lib/notion';
+
+interface Props {
+  exhibitor: Exhibitor;
+}
+
+export function getStaticPaths() {
+  return exhibitors.map((exhibitor) => ({
+    params: {
+      slug: exhibitor.slug,
+    },
+
+    props: {
+      exhibitor,
+    },
+  }));
+}
+
+const { exhibitor } = Astro.props;
+
+const whatsappDigits = exhibitor.whatsapp.replace(/\D/g, '');
+
+const whatsappUrl = whatsappDigits
+  ? `https://wa.me/${
+      whatsappDigits.length === 10
+        ? `52${whatsappDigits}`
+        : whatsappDigits
+    }`
+  : '';
+
+const mapsUrl = exhibitor.maps?.trim() || '';
+const mapsEmbedUrl = exhibitor.maps_api?.trim() || '';
+
+// Normalizar y preparar las redes sociales.
+const socialLinks = (exhibitor.socialLinks ?? [])
+  .map((social) => {
+    const platform = social.platform.trim();
+    const normalizedPlatform = platform
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+
+    let url = social.url.trim();
+
+    if (!url) return null;
+
+    // Aceptar solamente enlaces HTTP o HTTPS.
+    try {
+      if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
+      }
+
+      const parsedUrl = new URL(url);
+
+      if (!['https:', 'http:'].includes(parsedUrl.protocol)) {
+        return null;
+      }
+
+      url = parsedUrl.href;
+    } catch {
+      return null;
+    }
+
+    let key = 'other';
+
+    if (normalizedPlatform.includes('instagram')) {
+      key = 'instagram';
+    } else if (normalizedPlatform.includes('facebook')) {
+      key = 'facebook';
+    } else if (normalizedPlatform.includes('tiktok')) {
+      key = 'tiktok';
+    } else if (
+      normalizedPlatform.includes('website') ||
+      normalizedPlatform.includes('sitio web') ||
+      normalizedPlatform === 'web'
+    ) {
+      key = 'website';
+    } else if (normalizedPlatform.includes('youtube')) {
+      key = 'youtube';
+    } else if (normalizedPlatform.includes('linkedin')) {
+      key = 'linkedin';
+    }
+
+    const labels: Record<string, string> = {
+      instagram: 'Instagram',
+      facebook: 'Facebook',
+      tiktok: 'TikTok',
+      website: 'Sitio web',
+      youtube: 'YouTube',
+      linkedin: 'LinkedIn',
+      other: platform,
+    };
+
+    return {
+      platform,
+      url,
+      key,
+      label: labels[key],
+      order: social.order ?? 999,
+    };
+  })
+  .filter((social): social is NonNullable<typeof social> => social !== null)
+  .sort((a, b) => a.order - b.order);
+
+---
+
+<Layout
+  title={`${exhibitor.name} | Stellar Pulse`}
+  description={
+    exhibitor.description ||
+    `Conoce ${exhibitor.name}, emprendimiento participante de Stellar Pulse.`
+  }
+>
+  <section class="section">
+    <div class="container">
+      <a
+        href="/emprendimientos/"
+        class="profile-back"
+      >
+        ← Volver a emprendimientos
+      </a>
+
+      <header class="profile-header">
+        {
+          exhibitor.logo ? (
+            <img
+              src={exhibitor.logo}
+              alt={`Logotipo de ${exhibitor.name}`}
+              class="profile-logo"
+            />
+          ) : (
+            <div class="logo-placeholder profile-logo">
+              {exhibitor.name.slice(0, 1).toUpperCase()}
+            </div>
+          )
+        }
+
+        <div>
+          <span class="category">
+            {exhibitor.category}
+          </span>
+
+          <h1 class="profile-title">
+            {exhibitor.name}
+          </h1>
+
+          <span class="eyebrow">
+            Emprendimiento participante
+          </span>
+        </div>
+      </header>
+
+      {
+        exhibitor.description && (
+          <div class="event-panel">
+            <h2>Conoce la marca</h2>
+
+            <p class="profile-description">
+              {exhibitor.description}
+            </p>
+          </div>
+        )
+      }
+
+      {
+        exhibitor.images.length > 0 && (
+          <section class="section gallery-section">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Descubre la marca</span>
+                <h2>Productos destacados</h2>
+                <p>Explora algunos de los productos y creaciones del emprendimiento.</p>
+              </div>
+            </div>
+
+            <div
+              class="profile-gallery"
+              data-gallery
+              aria-label={`Galería de imágenes de ${exhibitor.name}`}
+            >
+              <div class="gallery-main">
+                {exhibitor.images.map((image, index) => (
+                  <img
+                    class:list={['gallery-slide', { 'is-active': index === 0 }]}
+                    src={image}
+                    alt={`${exhibitor.name}: imagen ${index + 1}`}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    data-gallery-slide={index}
+                    aria-hidden={index === 0 ? 'false' : 'true'}
+                  />
+                ))}
+
+                {exhibitor.images.length > 1 && (
+                  <>
+                    <button
+                      class="gallery-arrow gallery-arrow-prev"
+                      type="button"
+                      aria-label="Ver imagen anterior"
+                      data-gallery-prev
+                    >
+                      &#10094;
+                    </button>
+
+                    <button
+                      class="gallery-arrow gallery-arrow-next"
+                      type="button"
+                      aria-label="Ver imagen siguiente"
+                      data-gallery-next
+                    >
+                      &#10095;
+                    </button>
+
+                    <span class="gallery-counter" aria-live="polite">
+                      <span data-gallery-current>1</span>
+                      <span aria-hidden="true"> / </span>
+                      <span>{exhibitor.images.length}</span>
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {exhibitor.images.length > 1 && (
+                <div
+                  class="gallery-thumbnails"
+                  aria-label="Seleccionar imagen"
+                >
+                  {exhibitor.images.map((image, index) => (
+                    <button
+                      class:list={[
+                        'gallery-thumbnail',
+                        { 'is-active': index === 0 },
+                      ]}
+                      type="button"
+                      data-gallery-go={index}
+                      aria-label={`Mostrar imagen ${index + 1}`}
+                      aria-pressed={index === 0 ? 'true' : 'false'}
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        exhibitor.promo && (
+          <section class="section">
+            <div class="promo">
+              <strong>Promoción:</strong> {exhibitor.promo}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        (socialLinks.length > 0 || whatsappUrl) && (
+          <section class="section">
+            <div class="event-panel">
+              <span class="eyebrow">Conecta con la marca</span>
+              <h2>Contacta con el emprendimiento</h2>
+
+              <p>
+                Descubre más sobre sus productos y servicios a través
+                de sus canales oficiales.
+              </p>
+
+              <div class="profile-actions social-links">
+                {
+                  socialLinks.map((social) => (
+                    <a
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class={`social-button social-${social.key}`}
+                      aria-label={`Visitar ${social.label} de ${exhibitor.name}`}
+                    >
+                      <span class="social-icon" aria-hidden="true">
+                        {
+                          social.key === 'instagram' ? (
+                            <svg viewBox="0 0 24 24" fill="none">
+                              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2" />
+                              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" />
+                              <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
+                            </svg>
+                          ) : social.key === 'facebook' ? (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.5V13h2.7v8h3.3Z" />
+                            </svg>
+                          ) : social.key === 'tiktok' ? (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M19.6 7.1a6.5 6.5 0 0 1-4-1.4v8.1a6.1 6.1 0 1 1-5.3-6v3.4a2.8 2.8 0 1 0 1.9 2.7V2.5h3.4c.2 2.1 1.7 3.8 4 4.1v.5Z" />
+                            </svg>
+                          ) : social.key === 'website' ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <circle cx="12" cy="12" r="9" />
+                              <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+                            </svg>
+                          ) : social.key === 'youtube' ? (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
+                            </svg>
+                          ) : social.key === 'linkedin' ? (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M5.2 3a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM3.3 9h3.8v12H3.3V9Zm6.1 0H13v1.6h.1a4 4 0 0 1 3.6-2c3.9 0 4.6 2.5 4.6 5.7V21h-3.8v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.4V9Z" />
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            </svg>
+                          )
+                        }
+                      </span>
+
+                      <span>{social.label}</span>
+                      <span class="social-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  ))
+                }
+
+                {
+                  whatsappUrl && (
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="social-button social-whatsapp"
+                      aria-label={`Contactar por WhatsApp a ${exhibitor.name}`}
+                    >
+                      <span class="social-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5ZM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.3-.5a9.7 9.7 0 1 1 8.4 4.7Zm5.3-7.3c-.3-.2-1.7-.9-2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-.9-2.1c-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.2 3.2a11 11 0 0 0 4.3 3.8c.6.3 1.1.5 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3Z" />
+                        </svg>
+                      </span>
+
+                      <span>WhatsApp</span>
+                      <span class="social-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  )
+                }
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      {
+        mapsEmbedUrl && (
+          <section class="section location-section">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Nuestra ubicación</span>
+                <h2>Visita nuestro local</h2>
+                <p>
+                  Consulta la ubicación del emprendimiento y descubre
+                  cómo llegar.
+                </p>
+              </div>
+            </div>
+
+            <div class="location-map-wrapper">
+              <iframe
+                src={mapsEmbedUrl}
+                title={`Ubicación de ${exhibitor.name} en Google Maps`}
+                class="location-map"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            {
+                mapsUrl && (
+                  <div class="location-actions">
+                    <a
+                      href={mapsUrl}
+                      class="button button-secondary"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Abrir en Google Maps ↗
+                    </a>
+                  </div>
+                )
+              }
+            </section>
+          )
+        }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  
+  .gallery-section {
+    padding-top: 2rem;
+  }
+
+  .gallery-section .section-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    width: 100%;
+    max-width: 920px;
+    margin-inline: auto;
+  }
+
+  /* Escenario de la imagen principal */
+  .gallery-main {
+    position: relative;
+    width: 100%;
+    height: clamp(280px, 55vw, 540px);
+    overflow: hidden;
+    isolation: isolate;
+    background: #0b1020;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  /* Todas las diapositivas comparten el mismo espacio */
+  .gallery-main .gallery-slide {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+    object-position: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+
+  .gallery-main .gallery-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Flechas de navegación */
+  .gallery-arrow {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgb(255 255 255 / 20%);
+    border-radius: 50%;
+    background: rgb(8 11 24 / 78%);
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition:
+      background 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .gallery-arrow:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #080b18;
+  }
+
+  .gallery-arrow:focus-visible,
+  .gallery-thumbnail:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .gallery-arrow-prev {
+    left: 14px;
+  }
+
+  .gallery-arrow-next {
+    right: 14px;
+  }
+
+  /* Contador de fotografías */
+  .gallery-counter {
+    position: absolute;
+    z-index: 2;
+    right: 14px;
+    bottom: 14px;
+    padding: 7px 11px;
+    border: 1px solid rgb(255 255 255 / 15%);
+    border-radius: 999px;
+    background: rgb(8 11 24 / 78%);
+    color: #fff;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tira de miniaturas */
+  .gallery-thumbnails {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 2px 2px 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .gallery-thumbnail {
+    position: relative;
+    flex: 0 0 92px;
+    width: 92px;
+    height: 72px;
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 9px;
+    background: var(--surface);
+    opacity: 0.65;
+    cursor: pointer;
+    transition:
+      opacity 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .gallery-thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    object-fit: cover;
+  }
+
+  .gallery-thumbnail:hover {
+    opacity: 0.9;
+  }
+
+  .gallery-thumbnail.is-active {
+    border-color: var(--accent);
+    opacity: 1;
+  }
+
+  @media (max-width: 700px) {
+    .gallery-section {
+      padding-top: 1.25rem;
+    }
+
+    .gallery-main {
+      height: clamp(250px, 72vw, 440px);
+    }
+
+    .gallery-arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .gallery-arrow-prev {
+      left: 10px;
+    }
+
+    .gallery-arrow-next {
+      right: 10px;
+    }
+
+    .gallery-thumbnail {
+      flex-basis: 78px;
+      width: 78px;
+      height: 62px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .gallery-main {
+      height: 260px;
+    }
+
+    .gallery-thumbnail {
+      flex-basis: 70px;
+      width: 70px;
+      height: 58px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-main .gallery-slide,
+    .gallery-arrow,
+    .gallery-thumbnail {
+      transition: none;
+    }
+  }
+
+  /* Redes sociales y canales de contacto */
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 11px 17px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.social-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow: 0 7px 20px rgb(0 0 0 / 20%);
+}
+
+.social-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.social-icon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.social-arrow {
+  margin-left: 2px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Colores por plataforma */
+
+.social-instagram {
+  background: linear-gradient(
+    115deg,
+    #833ab4 0%,
+    #c13584 45%,
+    #e1306c 75%,
+    #f77737 100%
+  );
+}
+
+.social-facebook {
+  background: #1877f2;
+}
+
+.social-tiktok {
+  background: #111;
+  border-color: rgb(255 255 255 / 12%);
+}
+
+.social-website {
+  background: #26344d;
+  border-color: rgb(255 255 255 / 12%);
+}
+
+.social-youtube {
+  background: #ff0033;
+}
+
+.social-linkedin {
+  background: #0a66c2;
+}
+
+.social-whatsapp {
+  background: #128c4a;
+}
+
+.social-other {
+  background: #38445b;
+  border-color: rgb(255 255 255 / 12%);
+}
+
+@media (max-width: 600px) {
+  .social-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .social-button {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 10px;
+    gap: 7px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .social-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+  /* Ubicación del emprendimiento */
+  .location-section {
+    padding-top: 2rem;
+  }
+
+  .location-section .section-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  .location-map-wrapper {
+    width: 100%;
+    max-width: 920px;
+    height: clamp(300px, 45vw, 480px);
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .location-map {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .location-actions {
+    display: flex;
+    justify-content: flex-start;
+    max-width: 920px;
+    margin: 1rem auto 0;
+  }
+
+  @media (max-width: 700px) {
+    .location-section {
+      padding-top: 1.25rem;
+    }
+
+    .location-map-wrapper {
+      height: 350px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .location-map-wrapper {
+      height: 300px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const slides = Array.from(
+      gallery.querySelectorAll<HTMLImageElement>('[data-gallery-slide]')
+    );
+
+    const thumbnails = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-go]')
+    );
+
+    const currentCounter = gallery.querySelector<HTMLElement>(
+      '[data-gallery-current]'
+    );
+
+    const previousButton = gallery.querySelector<HTMLButtonElement>(
+      '[data-gallery-prev]'
+    );
+
+    const nextButton = gallery.querySelector<HTMLButtonElement>(
+      '[data-gallery-next]'
+    );
+
+    if (slides.length === 0) return;
+
+    let currentIndex = 0;
+
+    function showSlide(index: number) {
+      currentIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === currentIndex;
+
+        slide.classList.toggle('is-active', isActive);
+        slide.setAttribute('aria-hidden', String(!isActive));
+      });
+
+      thumbnails.forEach((thumbnail, thumbnailIndex) => {
+        const isActive = thumbnailIndex === currentIndex;
+
+        thumbnail.classList.toggle('is-active', isActive);
+        thumbnail.setAttribute('aria-pressed', String(isActive));
+      });
+
+      if (currentCounter) {
+        currentCounter.textContent = String(currentIndex + 1);
+      }
+
+      thumbnails[currentIndex]?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+
+    previousButton?.addEventListener('click', () => {
+      showSlide(currentIndex - 1);
+    });
+
+    nextButton?.addEventListener('click', () => {
+      showSlide(currentIndex + 1);
+    });
+
+    thumbnails.forEach((thumbnail) => {
+      thumbnail.addEventListener('click', () => {
+        const index = Number(thumbnail.dataset.galleryGo);
+
+        if (Number.isInteger(index)) {
+          showSlide(index);
+        }
+      });
+    });
+  });
+</script>

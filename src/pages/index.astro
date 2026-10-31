@@ -1,11 +1,1174 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import ExhibitorCard from '../components/ExhibitorCard.astro';
+import { exhibitors } from '../lib/exhibitors';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const featuredExhibitors = exhibitors.slice(0, 6);
+
+// Reunir las imágenes de productos de todos los emprendimientos
+const galleryImages = exhibitors.flatMap((item) =>
+  (item.images ?? [])
+    .filter((image) => Boolean(image))
+    .map((image) => ({
+      src: image,
+      name: item.name,
+    }))
+);
+
+// Distribuir las imágenes en dos filas
+const firstRow = galleryImages.filter((_, index) => index % 2 === 0);
+const secondRow = galleryImages
+  .filter((_, index) => index % 2 !== 0)
+  .reverse();
+
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Stellar Pulse | Descubre los emprendimientos"
+  description="Conoce los emprendimientos participantes de Stellar Pulse y descubre nuevas marcas, productos y servicios."
+>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">
+        Una experiencia para descubrir
+      </span>
+
+      <h1>
+        Conecta con nuevas marcas.<br />
+        <span>Descubre algo extraordinario.</span>
+      </h1>
+
+      <p>
+        Stellar Pulse reúne emprendimientos, productos y experiencias
+        en un espacio para descubrir nuevas propuestas y apoyar el
+        talento emprendedor.
+      </p>
+
+      <div class="hero-actions">
+        <a
+          href="/emprendimientos/"
+          class="button button-primary"
+        >
+          Explorar emprendimientos →
+        </a>
+
+        <a
+          href="#evento"
+          class="button button-secondary"
+        >
+          Conocer Stellar Pulse
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="gallery-section" aria-label="Galería de productos de los emprendimientos">
+    <div class="gallery-heading">
+      <span class="eyebrow">Descubre. Explora. Conecta.</span>
+      <h2>Un vistazo a lo extraordinario.</h2>
+      <p>
+        Ideas, productos y propuestas únicas de las marcas que dan vida
+        a nuestra comunidad.
+      </p>
+    </div>
+
+    {
+      galleryImages.length > 0 ? (
+        <div class="gallery-viewport">
+          <div class="gallery-row">
+            <div class="gallery-track">
+              {[0, 1].map((copy) => (
+                <div class="gallery-group" aria-hidden={copy === 1 ? 'true' : undefined}>
+                  {firstRow.map((image) => (
+                    <figure class="gallery-item">
+                      <img
+                        src={image.src}
+                        alt={copy === 0 ? `Producto de ${image.name}` : ''}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <figcaption>{image.name}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {
+            secondRow.length > 0 && (
+              <div class="gallery-row gallery-row-secondary">
+                <div class="gallery-track">
+                  {[0, 1].map((copy) => (
+                    <div class="gallery-group" aria-hidden={copy === 1 ? 'true' : undefined}>
+                      {secondRow.map((image) => (
+                        <figure class="gallery-item">
+                          <img
+                            src={image.src}
+                            alt={copy === 0 ? `Producto de ${image.name}` : ''}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <figcaption>{image.name}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+        </div>
+      ) : (
+        <p class="gallery-empty">
+          Muy pronto descubrirás aquí los productos de nuestra comunidad.
+        </p>
+      )
+    }
+  </section>
+
+  
+  <section class="stellar-nights" id="evento">
+    <div class="container">
+      <div class="nights-card">
+
+        <div class="nights-decoration nights-decoration-one"></div>
+        <div class="nights-decoration nights-decoration-two"></div>
+
+        <div class="nights-top">
+          <span class="nights-brand">✦ STELLAR PULSE STUDIOS</span>
+          <span class="nights-edition">CHRISTMAS EDITION · 2026</span>
+        </div>
+
+        <div class="nights-content">
+
+          <div class="nights-copy">
+            <span class="nights-kicker">
+              ✧ UNA NOCHE PARA BRILLAR ✧
+            </span>
+
+            <h2>
+              STELLAR
+              <span>NIGHTS</span>
+            </h2>
+
+            <div class="nights-subtitle">
+              CHRISTMAS EDITION
+            </div>
+
+            <p class="nights-description">
+              Esta Navidad, vive una experiencia diferente. Descubre
+              emprendimientos locales, disfruta de comida y bebidas,
+              déjate llevar por la música y comparte una noche llena
+              de descubrimientos, buena vibra y espíritu navideño.
+            </p>
+
+            <div class="nights-highlights">
+              <span>✦ Emprendimientos</span>
+              <span>✦ Gastronomía</span>
+              <span>✦ Música y ambiente</span>
+            </div>
+
+            <div class="nights-actions">
+              <a
+                href="https://www.tickean.com.mx/eventos/stellar-nights-christmas-edition"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="nights-button nights-button-primary"
+              >
+                <span>Comprar boletos</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+
+              <a
+                href="/emprendimientos/"
+                class="nights-button nights-button-secondary"
+              >
+                Descubrir participantes
+              </a>
+            </div>
+
+            <p class="nights-door-note">
+              ¿Prefieres comprarlos en persona? También habrá venta
+              el día del evento, sujeta a disponibilidad.
+            </p>
+          </div>
+
+          <div class="nights-side">
+            <div class="nights-date">
+              <span class="date-month">DICIEMBRE</span>
+              <strong>05</strong>
+              <span class="date-year">2026 · SÁBADO</span>
+            </div>
+
+            <div class="nights-divider"></div>
+
+            <div class="nights-info">
+              <div class="nights-info-item">
+                <span class="info-icon">◷</span>
+                <div>
+                  <span class="info-label">HORARIO</span>
+                  <strong>15:30 — 22:30 H</strong>
+                </div>
+              </div>
+
+              <div class="nights-info-item">
+                <span class="info-icon">⌖</span>
+                <div>
+                  <span class="info-label">UBICACIÓN</span>
+                  <strong>Finca San Blas</strong>
+                  <span class="info-detail">Toluca, Estado de México</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="nights-social">
+              <span>SIGUE LA EXPERIENCIA</span>
+              <a
+                href="https://www.instagram.com/stellarpulse_studios/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram de Stellar Pulse Studios"
+              >
+                <span aria-hidden="true">◎</span>
+                stellarpulse_studios ↗
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="nights-footer">
+          <span>CREANDO EXPERIENCIAS.</span>
+          <span class="footer-star">✦</span>
+          <span>CONECTANDO PERSONAS.</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <section class="sponsor-section">
+    <div class="container">
+      <div class="sponsor-panel">
+
+        <div class="sponsor-topline">
+          <span>STELLAR PULSE · 2026</span>
+          <span class="sponsor-tag">PATROCINADOR OFICIAL</span>
+        </div>
+
+        <div class="sponsor-main">
+          <div class="sponsor-brand">
+            <img
+              src="/materiales-perez-logo.jpeg"
+              alt="Materiales Pérez"
+              class="sponsor-logo"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="sponsor-message">
+            <span class="eyebrow">Presentado por</span>
+
+            <h2>
+              Las grandes ideas crecen cuando hay quienes creen en ellas.
+            </h2>
+
+            <p>
+              Gracias a Materiales Pérez por impulsar esta experiencia
+              y apoyar el talento emprendedor.
+            </p>
+
+            <a
+              href="/emprendimientos/materiales-perez/"
+              class="sponsor-link"
+            >
+              Conoce a Materiales Pérez
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">
+            Nuestra comunidad
+          </span>
+
+          <h2>Conoce a nuestros participantes</h2>
+
+          <p>
+            Descubre las marcas que forman parte de Stellar Pulse.
+          </p>
+        </div>
+
+        
+      </div>
+
+      {
+        featuredExhibitors.length > 0 ? (
+          <div class="exhibitor-grid">
+            {featuredExhibitors.map((item) => (
+              <ExhibitorCard item={item} />
+            ))}
+          </div>
+        ) : (
+          <div class="empty-state">
+            Estamos preparando el directorio de emprendimientos.
+            Vuelve pronto para conocer a los participantes.
+          </div>
+        )
+      }
+      <br>
+      <div>
+        <a
+          href="/emprendimientos/"
+          class="button button-secondary"
+        >
+          Ver todos →
+        </a>
+      </div>
+      
+    </div>
+  </section>
+
+  
 </Layout>
+
+
+<style>
+  .gallery-section {
+    position: relative;
+    overflow: hidden;
+    padding: 5.5rem 0 6rem;
+    background:
+      radial-gradient(
+        ellipse at 50% 45%,
+        rgba(54, 75, 125, 0.18),
+        transparent 65%
+      ),
+      #080b18;
+  }
+
+  .gallery-heading {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    margin: 0 auto 3.5rem;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+
+  .gallery-heading h2 {
+    margin: 0.8rem 0 1rem;
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+  }
+
+  .gallery-heading p {
+    max-width: 580px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .gallery-viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 7%,
+      #000 93%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 7%,
+      #000 93%,
+      transparent
+    );
+  }
+
+  .gallery-row {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .gallery-track {
+    display: flex;
+    width: max-content;
+    animation: gallery-scroll 48s linear infinite;
+    will-change: transform;
+  }
+
+  .gallery-row-secondary .gallery-track {
+    animation-duration: 58s;
+  }
+
+  .gallery-group {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .gallery-item {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(190px, 23vw, 320px);
+    height: clamp(145px, 18vw, 220px);
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: #111729;
+    isolation: isolate;
+  }
+
+  .gallery-item:nth-child(3n + 2) {
+    height: clamp(165px, 20vw, 245px);
+  }
+
+  .gallery-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.08);
+  }
+
+  .gallery-item::after {
+    position: absolute;
+    z-index: 1;
+    inset: 35% 0 0;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(4, 7, 17, 0.82)
+    );
+    content: '';
+    pointer-events: none;
+  }
+
+  .gallery-item figcaption {
+    position: absolute;
+    z-index: 2;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    overflow: hidden;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gallery-row:hover .gallery-track {
+    animation-play-state: paused;
+  }
+
+  .gallery-empty {
+    padding: 2rem 1.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+
+  @keyframes gallery-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery-section {
+      padding: 4rem 0 4.5rem;
+    }
+
+    .gallery-heading {
+      margin-bottom: 2.5rem;
+    }
+
+    .gallery-viewport {
+      gap: 0.85rem;
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 3%,
+        #000 97%,
+        transparent
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 3%,
+        #000 97%,
+        transparent
+      );
+    }
+
+    .gallery-group {
+      gap: 0.85rem;
+      padding-right: 0.85rem;
+    }
+
+    .gallery-item {
+      width: 205px;
+      height: 155px;
+      border-radius: 14px;
+    }
+
+    .gallery-item:nth-child(3n + 2) {
+      height: 175px;
+    }
+
+    .gallery-track {
+      animation-duration: 38s;
+    }
+
+    .gallery-row-secondary .gallery-track {
+      animation-duration: 46s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-track {
+      animation: none;
+      transform: none;
+    }
+
+    .gallery-viewport {
+      overflow-x: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .gallery-group[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  
+  .sponsor-section {
+    padding: 5rem 0;
+    background: #080b18;
+    background:
+      radial-gradient(
+        ellipse at 50% 45%,
+        rgba(54, 75, 125, 0.18),
+        transparent 65%
+      ),
+      #080b18;
+  }
+
+  .sponsor-panel {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem 2.5rem;
+    border: 1px solid rgba(244, 198, 106, 0.2);
+    border-radius: 22px;
+    background:
+      radial-gradient(
+        ellipse at 15% 50%,
+        rgba(244, 198, 106, 0.09),
+        transparent 55%
+      ),
+      linear-gradient(120deg, #121b30, #0c1222);
+  }
+
+  .sponsor-topline,
+  .sponsor-bottomline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .sponsor-topline {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f4c66a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .sponsor-tag {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgba(244, 198, 106, 0.35);
+    border-radius: 30px;
+    font-size: 0.62rem;
+  }
+
+  .sponsor-main {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.85fr) 1.4fr;
+    align-items: center;
+    gap: 4rem;
+    padding: 3.5rem 1rem;
+  }
+
+  .sponsor-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 190px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .sponsor-logo {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    max-height: 135px;
+    object-fit: contain;
+  }
+
+  .sponsor-message .eyebrow {
+    color: #f4c66a;
+  }
+
+  .sponsor-message h2 {
+    max-width: 590px;
+    margin: 0.8rem 0 1rem;
+    color: #fff;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+  }
+
+  .sponsor-message p {
+    max-width: 510px;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.68);
+    line-height: 1.7;
+  }
+
+  .sponsor-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #f4c66a;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: gap 0.2s ease;
+  }
+
+  .sponsor-link:hover {
+    gap: 1rem;
+  }
+
+  .sponsor-bottomline {
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+
+  .sponsor-star {
+    color: #f4c66a;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 700px) {
+    .sponsor-section {
+      padding: 3.5rem 0;
+    }
+
+    .sponsor-panel {
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+
+    .sponsor-main {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .sponsor-brand {
+      min-height: 145px;
+      padding: 1.5rem;
+    }
+
+    .sponsor-logo {
+      max-height: 100px;
+    }
+
+    .sponsor-message h2 {
+      font-size: 2rem;
+    }
+
+    .sponsor-topline {
+      font-size: 0.6rem;
+    }
+
+    .sponsor-tag {
+      font-size: 0.52rem;
+    }
+
+    .sponsor-bottomline {
+      font-size: 0.55rem;
+    }
+  }
+
+
+
+
+
+  .stellar-nights {
+    position: relative;
+    overflow: hidden;
+    padding: 4.5rem 0;
+    background: #080b18;
+  }
+
+  .nights-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 2rem 2.5rem 1.25rem;
+    border: 1px solid rgba(244, 198, 106, 0.24);
+    border-radius: 26px;
+    background:
+      radial-gradient(
+        ellipse at 75% 25%,
+        rgba(102, 85, 158, 0.23),
+        transparent 38%
+      ),
+      radial-gradient(
+        ellipse at 10% 85%,
+        rgba(244, 198, 106, 0.08),
+        transparent 35%
+      ),
+      linear-gradient(135deg, #11182c, #090e1d 75%);
+  }
+
+  .nights-decoration {
+    position: absolute;
+    z-index: -1;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(244, 198, 106, 0.09);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .nights-decoration-one {
+    top: -150px;
+    right: 10%;
+    box-shadow:
+      0 0 0 25px rgba(244, 198, 106, 0.025),
+      0 0 0 55px rgba(244, 198, 106, 0.018);
+  }
+
+  .nights-decoration-two {
+    right: -180px;
+    bottom: -180px;
+    width: 340px;
+    height: 340px;
+    border-color: rgba(143, 128, 204, 0.12);
+  }
+
+  .nights-top,
+  .nights-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nights-top {
+    padding-bottom: 1.3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nights-brand,
+  .nights-edition {
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+  }
+
+  .nights-brand {
+    color: #f4c66a;
+  }
+
+  .nights-edition {
+    color: #aab4c8;
+  }
+
+  .nights-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.7fr);
+    gap: 3.5rem;
+    align-items: center;
+    padding: 3.5rem 1rem;
+  }
+
+  .nights-copy {
+    max-width: 650px;
+  }
+
+  .nights-kicker {
+    display: inline-block;
+    margin-bottom: 1.1rem;
+    color: #f4c66a;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+  }
+
+  .nights-copy h2 {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(3.5rem, 8vw, 6.8rem);
+    font-weight: 800;
+    line-height: 0.86;
+    letter-spacing: -0.075em;
+  }
+
+  .nights-copy h2 span {
+    color: #f4c66a;
+  }
+
+  .nights-subtitle {
+    margin-top: 1.2rem;
+    color: #e2e6f0;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 600;
+    letter-spacing: 0.24em;
+  }
+
+  .nights-description {
+    max-width: 570px;
+    margin: 1.5rem 0;
+    color: rgba(255, 255, 255, 0.69);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .nights-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.2rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .nights-highlights span {
+    color: #d8ddec;
+    font-size: 0.78rem;
+  }
+
+  .nights-highlights span::first-letter {
+    color: #f4c66a;
+  }
+
+  .nights-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .nights-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.85rem 1.2rem;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .nights-button:hover {
+    transform: translateY(-2px);
+  }
+
+  .nights-button-primary {
+    color: #111729;
+    background: #f4c66a;
+  }
+
+  .nights-button-primary:hover {
+    background: #ffda8b;
+  }
+
+  .nights-button-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .nights-button-secondary:hover {
+    border-color: #f4c66a;
+  }
+
+  .nights-door-note {
+    max-width: 440px;
+    margin: 1rem 0 0;
+    color: #929db2;
+    font-size: 0.72rem;
+    line-height: 1.6;
+  }
+
+  .nights-side {
+    position: relative;
+    padding: 2rem 0 2rem 2.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.13);
+  }
+
+  .nights-date {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .date-month {
+    color: #f4c66a;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+  }
+
+  .nights-date strong {
+    margin: 0.15rem 0;
+    color: #fff;
+    font-size: clamp(6rem, 10vw, 8rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.09em;
+  }
+
+  .date-year {
+    color: #aab4c8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+  }
+
+  .nights-divider {
+    width: 100%;
+    height: 1px;
+    margin: 1.8rem 0;
+    background: rgba(255, 255, 255, 0.13);
+  }
+
+  .nights-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  .nights-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .info-icon {
+    color: #f4c66a;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .nights-info-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .info-label {
+    color: #929db2;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+  }
+
+  .nights-info-item strong {
+    color: #fff;
+    font-size: 0.9rem;
+  }
+
+  .info-detail {
+    color: #aab4c8;
+    font-size: 0.76rem;
+  }
+
+  .nights-social {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-top: 2rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.13);
+  }
+
+  .nights-social > span {
+    color: #929db2;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+
+  .nights-social a {
+    color: #f4c66a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .nights-social a:hover {
+    color: #ffda8b;
+  }
+
+  .nights-footer {
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+
+  .footer-star {
+    color: #f4c66a;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 760px) {
+    .stellar-nights {
+      padding: 3rem 0;
+    }
+
+    .nights-card {
+      padding: 1.4rem 1.3rem 1rem;
+      border-radius: 20px;
+    }
+
+    .nights-content {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding: 2.5rem 0;
+    }
+
+    .nights-copy h2 {
+      font-size: clamp(3.5rem, 15vw, 5.5rem);
+    }
+
+    .nights-side {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.13);
+      border-left: 0;
+    }
+
+    .nights-date strong {
+      font-size: 6rem;
+    }
+
+    .nights-divider {
+      display: none;
+    }
+
+    .nights-social {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nights-top {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .nights-edition {
+      font-size: 0.6rem;
+    }
+
+    .nights-copy h2 {
+      font-size: 3.6rem;
+    }
+
+    .nights-subtitle {
+      font-size: 0.82rem;
+      letter-spacing: 0.17em;
+    }
+
+    .nights-description {
+      font-size: 0.88rem;
+    }
+
+    .nights-actions {
+      flex-direction: column;
+    }
+
+    .nights-button {
+      width: 100%;
+    }
+
+    .nights-side {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .nights-date strong {
+      font-size: 5rem;
+    }
+
+    .nights-footer {
+      font-size: 0.48rem;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nights-button {
+      transition: none;
+    }
+  }
+
+</style>

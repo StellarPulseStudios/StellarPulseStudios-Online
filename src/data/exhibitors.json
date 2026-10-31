@@ -1,0 +1,201 @@
+[
+  {
+    "id": "40a62b2b-f90e-808f-9e3b-f4e12831159a",
+    "name": "V E L ꓥ Shop",
+    "slug": "v-e-l-shop",
+    "category": "Ropa",
+    "description": "Estilo sin complicaciones",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "",
+    "images": [
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-1-c6e34fbdeb2f.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/vela_s.hop/",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61594848345767",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-802e-8896-d6e95b4faa74",
+    "name": "Rene",
+    "slug": "rene",
+    "category": "Accesorios",
+    "description": "Joyas artesanales.",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "",
+    "images": [
+      "/uploads/40a62b2bf90e802e8896d6e95b4faa74-1-8ddaeb3b70aa.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": []
+  },
+  {
+    "id": "40a62b2b-f90e-806d-9733-c4380887162f",
+    "name": "Moqui",
+    "slug": "moqui",
+    "category": "Cafetería",
+    "description": "Cafetería de especialidad.",
+    "whatsapp": "",
+    "maps": "https://maps.app.goo.gl/VrzinNnPd1s2ftxt5",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.331280463864!2d-99.57738978871365!3d19.26795458190129!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8b522cf8f8a3%3A0x6fe8d8d4be2056df!2sMoqui%20Coffee!5e0!3m2!1sen!2smx!4v1793415837166!5m2!1sen!2smx",
+    "logo": "",
+    "images": [
+      "/uploads/40a62b2bf90e806d9733c4380887162f-1-3ce32100cd9c.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/moqui.coffee/",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/people/Moqui-Coffee/61554410750351/",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-8085-a4ec-ea2b343a8799",
+    "name": "Malka",
+    "slug": "malka",
+    "category": "Comida",
+    "description": "Miel mantequilla multiflor 100% cruda",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "",
+    "images": [
+      "/uploads/40a62b2bf90e8085a4ecea2b343a8799-1-337b5fdc6b3a.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/malka.miel/",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-80eb-acfb-f0e12ef3b393",
+    "name": "Alfoli",
+    "slug": "alfoli",
+    "category": "Repostería",
+    "description": "Panadería y repostería artesanal.",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "",
+    "images": [
+      "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-1-6618d0a5d351.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/alfoli.bake/",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "id": "40662b2b-f90e-805a-a0ff-fb602ad4dad6",
+    "name": "Letuitui MX",
+    "slug": "letuitui-mx",
+    "category": "Postres",
+    "description": "Desayunos | Postres | Bebidas | Actividades",
+    "whatsapp": "7221866212",
+    "maps": "https://maps.app.goo.gl/cbwvHzjhE6gtGDCd7",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2697.066844023054!2d-99.6640723!3d19.2786231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8900197f654d%3A0x74a37bcc5c5a44c4!2sLe%20Tuitui%20Postres!5e1!3m2!1ses!2smx!4v1793415776241!5m2!1ses!2smx",
+    "logo": "/uploads/40662b2bf90e805aa0fffb602ad4dad6-0-c905ab169a2a.jpg",
+    "images": [
+      "/uploads/40662b2bf90e805aa0fffb602ad4dad6-1-6d466eddea58.jpg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/letuitui.mx/",
+        "order": 1
+      },
+      {
+        "platform": "TikTok",
+        "url": "https://www.tiktok.com/@letuitui.mx",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "id": "40662b2b-f90e-80f9-8282-e68ef9548d23",
+    "name": "Materiales Pérez",
+    "slug": "materiales-perez",
+    "category": "Construcción",
+    "description": "Somos una empresa dedicada a la venta y suministro de materiales para construcción y ferretería en Toluca, ofreciendo soluciones para proyectos de construcción, remodelación y mantenimiento. Ofrecemos una amplia variedad de materiales para obra, incluyendo cemento, mortero, acero, agregados, block, tabique, tubería PVC, conexiones, poliducto, tinacos, aditivos, herramientas, entre otros productos. Contamos con atención personalizada para ayudarte a encontrar los materiales que necesitas y elaborar tu cotización.",
+    "whatsapp": "7228436063",
+    "maps": "https://maps.app.goo.gl/XckNtZC7Qo4g9M5ZA",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.303927614748!2d-99.68795410000001!3d19.269144900000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8857332672e1%3A0xf17ad050219380f3!2sMateriales%20Perez%2C%20S.A.%20de%20C.V.!5e0!3m2!1sen!2smx!4v1793414693448!5m2!1sen!2smx",
+    "logo": "/uploads/40662b2bf90e80f98282e68ef9548d23-0-ae6c3d844822.png",
+    "images": [
+      "/uploads/40662b2bf90e80f98282e68ef9548d23-1-8f38841b6da2.jpeg",
+      "/uploads/40662b2bf90e80f98282e68ef9548d23-2-20641056dd15.jpeg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/perez.materiales/",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/materiales.perez.sa.cv",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "id": "40062b2b-f90e-8046-95d0-f6366588b76a",
+    "name": "MAPA",
+    "slug": "mapa",
+    "category": "Tecnologías",
+    "description": "Somos MAPA",
+    "whatsapp": "7227935036",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/40062b2bf90e804695d0f6366588b76a-0-0f51e28f421f.png",
+    "images": [
+      "/uploads/40062b2bf90e804695d0f6366588b76a-1-dc59c5afaca9.jpg"
+    ],
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/finca_san_blas/",
+        "order": 1
+      }
+    ]
+  }
+]

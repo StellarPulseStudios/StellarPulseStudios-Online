@@ -1,0 +1,863 @@
+
+:root {
+  color-scheme: dark;
+
+  --bg: #080b18;
+  --surface: #111729;
+  --surface-hover: #171f35;
+  --border: #293149;
+
+  --text: #f5f6ff;
+  --muted: #a3acc2;
+
+  --accent: #f4c66a;
+  --accent-soft: rgba(244, 198, 106, 0.12);
+
+  --radius: 18px;
+  --max-width: 1180px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(70, 66, 150, 0.18),
+      transparent 35rem
+    ),
+    var(--bg);
+
+  color: var(--text);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* =========================================
+   ENCABEZADO Y MARCA
+   ========================================= */
+
+.site-header {
+  position: relative;
+  z-index: 100;
+
+  width: 100%;
+  min-height: 88px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  padding: 14px max(24px, calc((100% - var(--max-width)) / 2));
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+  background: rgba(8, 11, 24, 0.94);
+
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* Logo y nombre */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  display: block;
+
+  width: 68px;
+  height: 60px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+  object-position: center;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  line-height: 1.35;
+}
+
+.brand-text strong {
+  color: var(--text);
+
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.brand-text small {
+  color: var(--muted);
+
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+/* =========================================
+   NAVEGACIÓN DE ESCRITORIO
+   ========================================= */
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+.main-nav a {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 10px 16px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  color: var(--muted);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.main-nav a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.main-nav a:focus-visible,
+.menu-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* =========================================
+   BOTÓN HAMBURGUESA
+   Oculto en escritorio
+   ========================================= */
+
+.menu-toggle {
+  display: none;
+
+  width: 46px;
+  height: 46px;
+  padding: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  cursor: pointer;
+}
+
+.menu-toggle:hover {
+  background: var(--surface-hover);
+}
+
+.menu-toggle-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  width: 22px;
+  height: 22px;
+}
+
+.menu-toggle-icon span {
+  display: block;
+
+  width: 21px;
+  height: 2px;
+
+  border-radius: 2px;
+
+  background: currentColor;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+/* Animación de hamburguesa a X */
+
+.menu-toggle[aria-expanded="true"]
+  .menu-toggle-icon span:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"]
+  .menu-toggle-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"]
+  .menu-toggle-icon span:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* =========================================
+   CONTENEDORES GENERALES
+   ========================================= */
+
+.container {
+  width: min(calc(100% - 40px), var(--max-width));
+  margin-inline: auto;
+}
+
+/* =========================================
+   PORTADA / HERO
+   ========================================= */
+
+.hero {
+  padding: 90px 0 70px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--accent);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 900px;
+  margin: 22px auto;
+
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+
+.hero h1 span {
+  color: var(--accent);
+}
+
+.hero p {
+  max-width: 680px;
+  margin: 0 auto;
+
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+/* =========================================
+   BOTONES
+   ========================================= */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 46px;
+  padding: 12px 20px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button-primary {
+  border-color: var(--accent);
+
+  background: var(--accent);
+  color: #17120a;
+}
+
+.button-secondary {
+  background: var(--surface);
+}
+
+.button-secondary:hover {
+  background: var(--surface-hover);
+}
+
+/* =========================================
+   SECCIONES
+   ========================================= */
+
+.section {
+  padding: 30px 0 80px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  margin: 8px 0 0;
+
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.2;
+}
+
+.section-heading p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+/* =========================================
+   TARJETAS DE EMPRENDIMIENTOS
+   ========================================= */
+
+.exhibitor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.exhibitor-card {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  background: var(--surface);
+
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.exhibitor-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(244, 198, 106, 0.55);
+}
+
+.card-content {
+  flex: 1;
+  padding: 22px;
+}
+
+.exhibitor-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.exhibitor-logo {
+  width: 64px;
+  height: 64px;
+
+  flex-shrink: 0;
+  overflow: hidden;
+
+  border: 1px solid rgba(244, 198, 106, 0.5);
+  border-radius: 16px;
+
+  background: #20283c;
+
+  object-fit: cover;
+}
+
+.logo-placeholder {
+  display: grid;
+  place-items: center;
+
+  width: 64px;
+  height: 64px;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  background: var(--surface-hover);
+  color: var(--accent);
+
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.exhibitor-name {
+  margin: 0 0 5px;
+
+  font-size: 1.1rem;
+  line-height: 1.3;
+
+  overflow-wrap: anywhere;
+}
+
+.category {
+  display: inline-block;
+
+  padding: 4px 9px;
+
+  border: 1px solid rgba(244, 198, 106, 0.25);
+  border-radius: 999px;
+
+  background: var(--accent-soft);
+  color: var(--accent);
+
+  font-size: 0.7rem;
+}
+
+.exhibitor-description {
+  margin: 20px 0;
+
+  color: var(--muted);
+  font-size: 0.9rem;
+
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.product-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+
+  margin: 18px 0;
+}
+
+.product-gallery img {
+  width: 100%;
+  height: 135px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #20283c;
+
+  object-fit: cover;
+}
+
+.promo {
+  margin-top: 18px;
+  padding: 12px;
+
+  border: 1px solid rgba(244, 198, 106, 0.25);
+  border-radius: 10px;
+
+  background: var(--accent-soft);
+  color: var(--accent);
+
+  font-size: 0.82rem;
+}
+
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  padding: 16px 22px;
+
+  border-top: 1px solid var(--border);
+}
+
+.card-link {
+  color: var(--accent);
+
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+.empty-state {
+  padding: 45px 20px;
+
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+
+  color: var(--muted);
+  text-align: center;
+}
+
+/* =========================================
+   PANEL DEL EVENTO
+   ========================================= */
+
+.event-panel {
+  padding: 30px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  background: var(--surface);
+}
+
+.event-panel h2 {
+  margin-top: 0;
+}
+
+.event-panel p {
+  color: var(--muted);
+}
+
+/* =========================================
+   PIE DE PÁGINA
+   ========================================= */
+
+.site-footer {
+  padding: 45px 24px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+  text-align: center;
+}
+
+.footer-brand {
+  color: var(--accent);
+
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.site-footer p,
+.site-footer small {
+  color: var(--muted);
+}
+
+.site-footer p {
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   FICHA INDIVIDUAL DE EMPRENDIMIENTO
+   ========================================= */
+
+.profile-back {
+  display: inline-block;
+  margin-bottom: 28px;
+
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.profile-back:hover {
+  color: var(--accent);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  margin-bottom: 30px;
+}
+
+.profile-logo {
+  width: 120px;
+  height: 120px;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 24px;
+
+  background: var(--surface);
+
+  object-fit: cover;
+}
+
+.profile-title {
+  margin: 12px 0;
+
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.1;
+
+  overflow-wrap: anywhere;
+}
+
+.profile-description {
+  max-width: 760px;
+
+  color: var(--muted);
+
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+/* =========================================
+   TABLET Y MÓVIL
+   Menú hamburguesa hasta 800px
+   ========================================= */
+
+@media (max-width: 800px) {
+  /* Encabezado en una sola fila */
+  .site-header {
+    min-height: 76px;
+
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 12px 20px;
+  }
+
+  /* Marca */
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-logo {
+    width: 52px;
+    height: 48px;
+  }
+
+  .brand-text strong {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-text small {
+    font-size: 0.66rem;
+  }
+
+  /* Botón hamburguesa visible */
+  .menu-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  /* Navegación cerrada por defecto */
+  .main-nav {
+    display: none;
+
+    width: 100%;
+    flex: 0 0 100%;
+
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+
+    padding: 12px 0 4px;
+
+    border-top: 1px solid var(--border);
+  }
+
+  /* Navegación abierta mediante el botón */
+  .main-nav[data-open="true"] {
+    display: flex;
+  }
+
+  .main-nav a {
+    width: 100%;
+    min-height: 48px;
+
+    justify-content: flex-start;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    font-size: 0.95rem;
+  }
+
+  .main-nav a:hover {
+    border-color: rgba(244, 198, 106, 0.18);
+    background: var(--accent-soft);
+  }
+
+  /* Tarjetas */
+  .exhibitor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================
+   MÓVILES
+   ========================================= */
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 65px 0 45px;
+  }
+
+  .exhibitor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-logo {
+    width: 96px;
+    height: 96px;
+  }
+
+  .card-content {
+    padding: 18px;
+  }
+
+  .card-footer {
+    padding: 14px 18px;
+  }
+}
+
+/* =========================================
+   MÓVILES PEQUEÑOS
+   ========================================= */
+
+@media (max-width: 380px) {
+  .site-header {
+    padding-inline: 14px;
+    gap: 8px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .brand-text strong {
+    font-size: 0.73rem;
+    letter-spacing: 0.045em;
+  }
+
+  .brand-text small {
+    max-width: 150px;
+    font-size: 0.62rem;
+  }
+
+  .menu-toggle {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* =========================================
+   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .menu-toggle-icon span,
+  .main-nav a {
+    transition: none;
+  }
+}

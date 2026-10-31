@@ -1,0 +1,107 @@
+
+---
+import type { Exhibitor } from '../lib/notion';
+
+interface Props {
+  item: Exhibitor;
+}
+
+const { item } = Astro.props;
+
+const whatsappDigits = (item.whatsapp ?? '').replace(/\D/g, '');
+
+const whatsappUrl = whatsappDigits
+  ? `https://wa.me/${
+      whatsappDigits.length === 10
+        ? `52${whatsappDigits}`
+        : whatsappDigits
+    }`
+  : '';
+
+const socialLinks = (item.socialLinks ?? []).map((social) => ({
+  ...social,
+  url: /^https?:\/\//i.test(social.url)
+    ? social.url
+    : `https://${social.url}`,
+}));
+
+const profileUrl = `/emprendimientos/${item.slug}/`;
+---
+
+<article class="exhibitor-card">
+  <div class="card-content">
+    <div class="exhibitor-header">
+      {
+        item.logo ? (
+          <img
+            src={item.logo}
+            alt={`Logotipo de ${item.name}`}
+            class="exhibitor-logo"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div class="logo-placeholder" aria-hidden="true">
+            {item.name.slice(0, 1).toUpperCase()}
+          </div>
+        )
+      }
+
+      <div>
+        <h3 class="exhibitor-name">
+          <a href={profileUrl}>{item.name}</a>
+        </h3>
+
+        <span class="category">{item.category}</span>
+      </div>
+    </div>
+
+    {
+      item.description && (
+        <p class="exhibitor-description">
+          {item.description}
+        </p>
+      )
+    }
+
+    {
+      item.promo && (
+        <div class="promo">
+          <strong>Promoción:</strong> {item.promo}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="card-footer">
+    <a class="card-link" href={profileUrl}>
+      Conocer marca →
+    </a>
+    
+    <!-- {
+      socialLinks.map((social) => (
+        <a
+          class="card-link"
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {social.platform} ↗
+        </a>
+      ))
+    }
+
+    {
+      whatsappUrl && (
+        <a
+          class="card-link"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp ↗
+        </a>
+      )
+    } -->
+  </div>
+</article>
