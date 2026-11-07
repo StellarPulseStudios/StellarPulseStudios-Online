@@ -11,6 +11,11 @@ export interface SocialLink {
   order: number;
 }
 
+export interface ImageSize {
+  width: number;
+  height: number;
+}
+
 export interface Exhibitor {
   id: string;
   name: string;
@@ -22,6 +27,8 @@ export interface Exhibitor {
   maps_api: string;
   logo: string;
   images: string[];
+  /** Medidas de cada imagen descargada, por ruta pública. */
+  imageSizes: Record<string, ImageSize>;
   promo: string;
   code: string;
   socialLinks: SocialLink[];
@@ -208,12 +215,16 @@ async function fetchWithRetry(url: URL, attempts = 3): Promise<Response> {
   throw lastError;
 }
 
+interface DownloadedImage extends ImageSize {
+  src: string;
+}
+
 async function downloadImage(
   url: string,
   filename: string,
   kind: ImageKind
-): Promise<string> {
-  if (!url) return '';
+): Promise<DownloadedImage | null> {
+  if (!url) return null;
 
   const publicPath = `/uploads/${filename}`;
 
@@ -222,7 +233,7 @@ async function downloadImage(
 
     if (parsedUrl.protocol !== 'https:') {
       console.warn(`Se omitió una imagen con URL no HTTPS: ${filename}`);
-      return '';
+      return null;
     }
 
     await fs.mkdir(UPLOAD_DIR, { recursive: true });
@@ -230,7 +241,8 @@ async function downloadImage(
     const filePath = path.join(UPLOAD_DIR, filename);
 
     if (await fileExists(filePath)) {
-      return publicPath;
+      const { width = 0, height = 0 } = await sharp(filePath).metadata();
+      return { src: publicPath, width, height };
     }
 
     const response = await fetchWithRetry(parsedUrl);
@@ -254,7 +266,7 @@ async function downloadImage(
     // en el celular durante el evento.
     const size = MAX_SIZE[kind];
 
-    await sharp(buffer, { animated: false })
+    const info = await sharp(buffer, { animated: false })
       .rotate()
       .resize({
         width: size,
@@ -265,11 +277,11 @@ async function downloadImage(
       .webp({ quality: kind === 'logo' ? 90 : 80 })
       .toFile(filePath);
 
-    return publicPath;
+    return { src: publicPath, width: info.width, height: info.height };
   } catch (error) {
     console.error(`No se pudo descargar la imagen ${filename}:`, error);
 
-    return '';
+    return null;
   }
 }
 
@@ -278,10 +290,10 @@ async function downloadNotionFile(
   pageId: string,
   index: number,
   kind: ImageKind
-): Promise<string> {
+): Promise<DownloadedImage | null> {
   const url = getFileUrl(file);
 
-  if (!url) return '';
+  if (!url) return null;
 
   const isNotionFile = file.type === 'file' || (!file.type && !!file.file?.url);
 
@@ -291,7 +303,7 @@ async function downloadNotionFile(
     filename = stableFilename(pageId, index, url, isNotionFile);
   } catch {
     console.warn(`URL de imagen no válida en la página ${pageId}`);
-    return '';
+    return null;
   }
 
   return downloadImage(url, filename, kind);
@@ -342,24 +354,36 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
 
     const logoFile = getFiles(props.Logo)[0];
 
-    const logo = logoFile
+    const imageSizes: Record<string, ImageSize> = {};
+
+    const downloadedLogo = logoFile
       ? await downloadNotionFile(logoFile, page.id, 0, 'logo')
-      : '';
+      : null;
+
+    if (downloadedLogo) {
+      imageSizes[downloadedLogo.src] = {
+        width: downloadedLogo.width,
+        height: downloadedLogo.height,
+      };
+    }
+
+    const logo = downloadedLogo?.src ?? '';
 
     const productFiles = getFiles(props.Images);
 
     const images: string[] = [];
 
     for (let i = 0; i < productFiles.length; i++) {
-      const imageUrl = await downloadNotionFile(
+      const image = await downloadNotionFile(
         productFiles[i],
         page.id,
         i + 1,
         'image'
       );
 
-      if (imageUrl) {
-        images.push(imageUrl);
+      if (image) {
+        images.push(image.src);
+        imageSizes[image.src] = { width: image.width, height: image.height };
       }
     }
 
@@ -374,6 +398,7 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
       maps_api: getUrl(props.Maps_Api),
       logo,
       images,
+      imageSizes,
       promo: getText(props.Promo),
       code: getText(props.Código),
       socialLinks,
