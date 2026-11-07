@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { exhibitors } from '../../lib/exhibitors';
+import { exhibitors, imageSize } from '../../lib/exhibitors';
 import {
   getMapsEmbedUrl,
   getSocialLinks,
@@ -35,6 +35,27 @@ const mapsEmbedUrl = getMapsEmbedUrl(exhibitor.maps_api);
 const socialLinks = getSocialLinks(exhibitor);
 
 const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
+
+// Datos estructurados para buscadores (schema.org).
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${pageUrl}#negocio`,
+  name: exhibitor.name,
+  url: pageUrl,
+  ...(exhibitor.description && { description: exhibitor.description }),
+  ...(exhibitor.logo && { logo: new URL(exhibitor.logo, Astro.site).href }),
+  ...((exhibitor.images.length > 0 || exhibitor.logo) && {
+    image: (exhibitor.images.length > 0 ? exhibitor.images : [exhibitor.logo])
+      .map((src) => new URL(src, Astro.site).href),
+  }),
+  ...(whatsappUrl && {
+    telephone: `+${whatsappUrl.replace('https://wa.me/', '')}`,
+  }),
+  ...(mapsUrl && { hasMap: mapsUrl }),
+  ...(socialLinks.length > 0 && { sameAs: socialLinks.map((s) => s.url) }),
+};
 ---
 
 <Layout
@@ -45,6 +66,12 @@ const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
   }
   image={shareImage}
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}
+  />
+
   <section class="section">
     <div class="container">
       <a
@@ -59,6 +86,7 @@ const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
           exhibitor.logo ? (
             <img
               src={exhibitor.logo}
+              {...imageSize(exhibitor, exhibitor.logo)}
               alt={`Logotipo de ${exhibitor.name}`}
               class="profile-logo"
             />
@@ -117,6 +145,7 @@ const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
                   <img
                     class:list={['gallery-slide', { 'is-active': index === 0 }]}
                     src={image}
+                    {...imageSize(exhibitor, image)}
                     alt={`${exhibitor.name}: imagen ${index + 1}`}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding="async"
@@ -172,6 +201,7 @@ const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
                     >
                       <img
                         src={image}
+                        {...imageSize(exhibitor, image)}
                         alt=""
                         loading="lazy"
                         decoding="async"

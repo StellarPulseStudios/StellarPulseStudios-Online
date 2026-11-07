@@ -46,6 +46,8 @@ const imageUrl = new URL(image, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
+
+    <slot name="head" />
   </head>
 
   <body>
@@ -60,8 +62,8 @@ const imageUrl = new URL(image, Astro.site);
           class="brand-logo"
           src="/brand/stellar-pulse-logo.webp"
           alt="Stellar Pulse"
-          width="180"
-          height="60"
+          width="192"
+          height="192"
         />
 
         <span class="brand-text">

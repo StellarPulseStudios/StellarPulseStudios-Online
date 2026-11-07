@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ExhibitorCard from '../components/ExhibitorCard.astro';
-import { exhibitors } from '../lib/exhibitors';
+import { exhibitors, imageSize } from '../lib/exhibitors';
 
 const featuredExhibitors = exhibitors.slice(0, 6);
 
@@ -12,6 +12,41 @@ const sponsorUrl = sponsor
   ? `/emprendimientos/${sponsor.slug}/`
   : '/emprendimientos/';
 
+// Datos estructurados del evento para buscadores (schema.org).
+const eventData = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: 'Stellar Nights · Christmas Edition',
+  description:
+    'Emprendimientos locales, gastronomía, música y ambiente navideño en Toluca.',
+  startDate: '2026-12-05T15:30:00-06:00',
+  endDate: '2026-12-05T22:30:00-06:00',
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  image: [new URL('/brand/og-default.jpg', Astro.site).href],
+  url: new URL('/', Astro.site).href,
+  location: {
+    '@type': 'Place',
+    name: 'Finca San Blas',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Toluca',
+      addressRegion: 'Estado de México',
+      addressCountry: 'MX',
+    },
+  },
+  organizer: {
+    '@type': 'Organization',
+    name: 'Stellar Pulse Studios',
+    url: 'https://www.instagram.com/stellarpulse_studios/',
+  },
+  offers: {
+    '@type': 'Offer',
+    url: 'https://www.tickean.com.mx/eventos/stellar-nights-christmas-edition',
+    availability: 'https://schema.org/InStock',
+  },
+};
+
 // Reunir las imágenes de productos de todos los emprendimientos
 const galleryImages = exhibitors.flatMap((item) =>
   (item.images ?? [])
@@ -19,6 +54,7 @@ const galleryImages = exhibitors.flatMap((item) =>
     .map((image) => ({
       src: image,
       name: item.name,
+      size: imageSize(item, image),
     }))
 );
 
@@ -34,6 +70,12 @@ const secondRow = galleryImages
   title="Stellar Pulse | Descubre los emprendimientos"
   description="Conoce los emprendimientos participantes de Stellar Pulse y descubre nuevas marcas, productos y servicios."
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(eventData)}
+  />
+
   <section class="hero">
     <div class="container">
       <span class="eyebrow">
@@ -91,6 +133,7 @@ const secondRow = galleryImages
                     <figure class="gallery-item">
                       <img
                         src={image.src}
+                        {...image.size}
                         alt={copy === 0 ? `Producto de ${image.name}` : ''}
                         loading="lazy"
                         decoding="async"
@@ -113,6 +156,7 @@ const secondRow = galleryImages
                         <figure class="gallery-item">
                           <img
                             src={image.src}
+                            {...image.size}
                             alt={copy === 0 ? `Producto de ${image.name}` : ''}
                             loading="lazy"
                             decoding="async"
@@ -269,7 +313,9 @@ const secondRow = galleryImages
         <div class="sponsor-main">
           <div class="sponsor-brand">
             <img
-              src="/materiales-perez-logo.jpeg"
+              src="/brand/materiales-perez-logo.webp"
+              width="480"
+              height="416"
               alt="Materiales Pérez"
               class="sponsor-logo"
               loading="lazy"

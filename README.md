@@ -2,10 +2,11 @@
 
 Sitio estático con los emprendimientos participantes de Stellar Pulse.
 Los datos se capturan en una base de datos de **Notion**, el sitio se genera
-con **Astro** y se publica en **Cloudflare Pages**.
+con **Astro** y se publica en **Cloudflare Workers** (Workers Builds, Worker
+`stellarpulsestudios-web`, rama `master`).
 
 ```
-Notion ──(sync en cada build)──▶ src/data/exhibitors.json + public/uploads/*.webp ──▶ Astro ──▶ Cloudflare Pages
+Notion ──(sync en cada build)──▶ src/data/exhibitors.json + public/uploads/*.webp ──▶ Astro ──▶ Cloudflare Workers
 ```
 
 ## Desarrollo local
@@ -55,22 +56,34 @@ descargan, se redimensionan (logos a 400 px, fotos a 1600 px) y se convierten
 a WebP en `public/uploads/`. El nombre de cada archivo se basa en la ruta del
 archivo en Notion, de modo que no cambia entre sincronizaciones.
 
-## Publicación (Cloudflare Pages)
+## Publicación (Cloudflare Workers)
 
-Configuración del proyecto en Cloudflare Pages:
+Cada push a `master` dispara un build en Cloudflare (Workers Builds), que
+ejecuta `npm run build` y publica la carpeta `dist/`.
 
-- **Build command:** `npm run build`
-- **Output directory:** `dist`
-- **Variables:** `NOTION_API_KEY`, `NOTION_DATABASE_ID`, `SITE_URL`
+Variables de **build** del Worker (*Settings → Builds → Variables*):
+`NOTION_API_KEY`, `NOTION_DATABASE_ID` y `SITE_URL`
+(`https://stellarpulsestudios-web.stellarpstudios.workers.dev` mientras no
+haya dominio propio).
+
+Los builds de vista previa de otras ramas pueden fallar si esas variables solo
+están disponibles para producción; eso no afecta al sitio publicado.
+
+`public/_headers` define la caché de los archivos estáticos.
 
 ### Reconstrucción automática
 
 El sitio es estático: los cambios en Notion aparecen después del siguiente build.
 
-1. En Cloudflare Pages: *Settings → Builds → Deploy hooks* → crea un hook para
-   la rama de producción y copia la URL.
+1. En Cloudflare: Worker → *Settings → Builds → Deploy hooks* → crea un hook
+   para `master` y copia la URL.
 2. En GitHub: *Settings → Secrets and variables → Actions* → crea el secreto
-   `CLOUDFLARE_DEPLOY_HOOK` con esa URL.
+   `CLOUDFLARE_DEPLOY_HOOK` con esa URL. No la compartas.
 3. El workflow [`Reconstruir desde Notion`](.github/workflows/rebuild-from-notion.yml)
    llama al hook cada 3 horas. Para publicar al momento, ábrelo en la pestaña
    **Actions** y pulsa **Run workflow**.
+
+## Archivos de diseño
+
+`design/` guarda los originales en alta resolución (no se publican). Las
+versiones optimizadas que usa el sitio están en `public/brand/`.

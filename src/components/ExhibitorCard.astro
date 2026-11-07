@@ -2,6 +2,7 @@
 ---
 import type { Exhibitor } from '../lib/notion';
 import { getSocialLinks, getWhatsappUrl } from '../lib/links';
+import { imageSize } from '../lib/exhibitors';
 
 interface Props {
   item: Exhibitor;
@@ -25,6 +26,7 @@ const profileUrl = `/emprendimientos/${item.slug}/`;
         item.logo ? (
           <img
             src={item.logo}
+            {...imageSize(item, item.logo)}
             alt={`Logotipo de ${item.name}`}
             class="exhibitor-logo"
             loading="lazy"
