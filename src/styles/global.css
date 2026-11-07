@@ -861,3 +861,19 @@ button:focus-visible {
     transition: none;
   }
 }
+
+/* =========================================
+   TARJETAS: DESCRIPCIÓN RESUMIDA Y FILTROS
+   ========================================= */
+
+.exhibitor-card .exhibitor-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.exhibitor-card[hidden] {
+  display: none;
+}

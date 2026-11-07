@@ -1,6 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { exhibitors } from '../../lib/exhibitors';
+import {
+  getMapsEmbedUrl,
+  getSocialLinks,
+  getWhatsappUrl,
+} from '../../lib/links';
 
 import type { Exhibitor } from '../../lib/notion';
 
@@ -22,91 +27,14 @@ export function getStaticPaths() {
 
 const { exhibitor } = Astro.props;
 
-const whatsappDigits = exhibitor.whatsapp.replace(/\D/g, '');
-
-const whatsappUrl = whatsappDigits
-  ? `https://wa.me/${
-      whatsappDigits.length === 10
-        ? `52${whatsappDigits}`
-        : whatsappDigits
-    }`
-  : '';
+const whatsappUrl = getWhatsappUrl(exhibitor.whatsapp);
 
 const mapsUrl = exhibitor.maps?.trim() || '';
-const mapsEmbedUrl = exhibitor.maps_api?.trim() || '';
+const mapsEmbedUrl = getMapsEmbedUrl(exhibitor.maps_api);
 
-// Normalizar y preparar las redes sociales.
-const socialLinks = (exhibitor.socialLinks ?? [])
-  .map((social) => {
-    const platform = social.platform.trim();
-    const normalizedPlatform = platform
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim();
+const socialLinks = getSocialLinks(exhibitor);
 
-    let url = social.url.trim();
-
-    if (!url) return null;
-
-    // Aceptar solamente enlaces HTTP o HTTPS.
-    try {
-      if (!/^https?:\/\//i.test(url)) {
-        url = `https://${url}`;
-      }
-
-      const parsedUrl = new URL(url);
-
-      if (!['https:', 'http:'].includes(parsedUrl.protocol)) {
-        return null;
-      }
-
-      url = parsedUrl.href;
-    } catch {
-      return null;
-    }
-
-    let key = 'other';
-
-    if (normalizedPlatform.includes('instagram')) {
-      key = 'instagram';
-    } else if (normalizedPlatform.includes('facebook')) {
-      key = 'facebook';
-    } else if (normalizedPlatform.includes('tiktok')) {
-      key = 'tiktok';
-    } else if (
-      normalizedPlatform.includes('website') ||
-      normalizedPlatform.includes('sitio web') ||
-      normalizedPlatform === 'web'
-    ) {
-      key = 'website';
-    } else if (normalizedPlatform.includes('youtube')) {
-      key = 'youtube';
-    } else if (normalizedPlatform.includes('linkedin')) {
-      key = 'linkedin';
-    }
-
-    const labels: Record<string, string> = {
-      instagram: 'Instagram',
-      facebook: 'Facebook',
-      tiktok: 'TikTok',
-      website: 'Sitio web',
-      youtube: 'YouTube',
-      linkedin: 'LinkedIn',
-      other: platform,
-    };
-
-    return {
-      platform,
-      url,
-      key,
-      label: labels[key],
-      order: social.order ?? 999,
-    };
-  })
-  .filter((social): social is NonNullable<typeof social> => social !== null)
-  .sort((a, b) => a.order - b.order);
-
+const shareImage = exhibitor.images[0] || exhibitor.logo || undefined;
 ---
 
 <Layout
@@ -115,6 +43,7 @@ const socialLinks = (exhibitor.socialLinks ?? [])
     exhibitor.description ||
     `Conoce ${exhibitor.name}, emprendimiento participante de Stellar Pulse.`
   }
+  image={shareImage}
 >
   <section class="section">
     <div class="container">

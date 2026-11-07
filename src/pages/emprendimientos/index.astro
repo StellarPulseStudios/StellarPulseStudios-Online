@@ -36,20 +36,38 @@ const categories = [
         <div>
           <h2>Todos los participantes</h2>
 
-          <p>
+          <p data-results-count aria-live="polite">
             {exhibitors.length} emprendimientos publicados.
           </p>
         </div>
       </div>
 
       {
-        categories.length > 0 && (
+        categories.length > 1 && (
           <div
-            class="category-list"
-            aria-label="Categorías disponibles"
+            class="category-filter"
+            role="group"
+            aria-label="Filtrar por categoría"
+            data-category-filter
           >
+            <button
+              type="button"
+              class="category-chip"
+              aria-pressed="true"
+              data-category=""
+            >
+              Todas
+            </button>
+
             {categories.map((category) => (
-              <span class="category">{category}</span>
+              <button
+                type="button"
+                class="category-chip"
+                aria-pressed="false"
+                data-category={category}
+              >
+                {category}
+              </button>
             ))}
           </div>
         )
@@ -74,10 +92,99 @@ const categories = [
 </Layout>
 
 <style>
-  .category-list {
+  .category-filter {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 28px;
   }
+
+  .category-chip {
+    min-height: 40px;
+    padding: 8px 16px;
+
+    border: 1px solid rgba(244, 198, 106, 0.25);
+    border-radius: 999px;
+
+    background: transparent;
+    color: var(--accent);
+
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+
+  .category-chip:hover {
+    background: var(--accent-soft);
+  }
+
+  .category-chip[aria-pressed='true'] {
+    background: var(--accent);
+    color: #080b18;
+  }
+
+  .category-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
 </style>
+
+<script>
+  const filter = document.querySelector<HTMLElement>('[data-category-filter]');
+  const chips = Array.from(
+    filter?.querySelectorAll<HTMLButtonElement>('[data-category]') ?? []
+  );
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>('.exhibitor-grid [data-category]')
+  );
+  const counter = document.querySelector<HTMLElement>('[data-results-count]');
+
+  function applyFilter(category: string) {
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const show = !category || card.dataset.category === category;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    chips.forEach((chip) => {
+      chip.setAttribute(
+        'aria-pressed',
+        String((chip.dataset.category ?? '') === category)
+      );
+    });
+
+    if (counter) {
+      counter.textContent = category
+        ? `${visible} de ${cards.length} emprendimientos en ${category}.`
+        : `${cards.length} emprendimientos publicados.`;
+    }
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const category = chip.dataset.category ?? '';
+      applyFilter(category);
+
+      // Guardar el filtro en la URL para poder compartirlo.
+      const url = new URL(window.location.href);
+      if (category) {
+        url.searchParams.set('categoria', category);
+      } else {
+        url.searchParams.delete('categoria');
+      }
+      history.replaceState(null, '', url);
+    });
+  });
+
+  const initial = new URLSearchParams(window.location.search).get('categoria');
+  if (initial && chips.some((chip) => chip.dataset.category === initial)) {
+    applyFilter(initial);
+  }
+</script>

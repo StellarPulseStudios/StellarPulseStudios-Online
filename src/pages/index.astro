@@ -5,6 +5,13 @@ import { exhibitors } from '../lib/exhibitors';
 
 const featuredExhibitors = exhibitors.slice(0, 6);
 
+// Si el slug del patrocinador cambia en Notion, enlazar al directorio
+// en lugar de a una página que no existe.
+const sponsor = exhibitors.find((item) => item.slug === 'materiales-perez');
+const sponsorUrl = sponsor
+  ? `/emprendimientos/${sponsor.slug}/`
+  : '/emprendimientos/';
+
 // Reunir las imágenes de productos de todos los emprendimientos
 const galleryImages = exhibitors.flatMap((item) =>
   (item.images ?? [])
@@ -282,7 +289,7 @@ const secondRow = galleryImages
             </p>
 
             <a
-              href="/emprendimientos/materiales-perez/"
+              href={sponsorUrl}
               class="sponsor-link"
             >
               Conoce a Materiales Pérez
