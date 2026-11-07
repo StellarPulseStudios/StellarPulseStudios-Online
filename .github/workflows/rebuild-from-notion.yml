@@ -1,0 +1,34 @@
+# Vuelve a publicar el sitio en Cloudflare Pages para traer los cambios de
+# Notion. Cloudflare ejecuta `npm run build`, que sincroniza Notion primero.
+#
+# Requiere el secreto CLOUDFLARE_DEPLOY_HOOK en GitHub
+# (Settings → Secrets and variables → Actions).
+#
+# Cloudflare Pages (plan gratuito) permite 500 builds al mes, así que el
+# horario automático es cada 3 horas (~240 builds/mes). Para publicar al
+# momento, usa "Run workflow" en la pestaña Actions.
+name: Reconstruir desde Notion
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: rebuild-from-notion
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar al deploy hook de Cloudflare Pages
+        env:
+          DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::warning::Falta el secreto CLOUDFLARE_DEPLOY_HOOK; no se hizo nada."
+            exit 0
+          fi
+          curl --fail --silent --show-error --retry 3 -X POST "$DEPLOY_HOOK"
+          echo "Build solicitado en Cloudflare Pages."

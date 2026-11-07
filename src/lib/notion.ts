@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import sharp from 'sharp';
 
 
 export interface SocialLink {
@@ -140,38 +141,81 @@ function slugify(value: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-function stableFilename(id: string, index: number, url: string): string {
-  const hash = createHash('sha256')
-    .update(url)
-    .digest('hex')
-    .slice(0, 12);
+type ImageKind = 'logo' | 'image';
 
-  const extensionFromUrl = path.extname(
-    new URL(url).pathname
-  ).toLowerCase();
+// Tamaño máximo (lado mayor) de cada tipo de imagen ya optimizada.
+const MAX_SIZE: Record<ImageKind, number> = {
+  logo: 400,
+  image: 1600,
+};
 
-  const allowedExtensions = [
-    '.jpg',
-    '.jpeg',
-    '.png',
-    '.webp',
-    '.gif',
-    '.avif',
-    '.svg',
-  ];
+/**
+ * Las URLs de archivos subidos a Notion están firmadas y cambian en cada
+ * consulta (los parámetros de la query caducan en ~1 h). La ruta, en cambio,
+ * es estable, así que el nombre del archivo se calcula solo con ella. Así la
+ * misma imagen conserva su nombre entre sincronizaciones y no se descarga
+ * otra vez si ya existe.
+ */
+function stableFilename(
+  id: string,
+  index: number,
+  url: string,
+  isNotionFile: boolean
+): string {
+  const parsed = new URL(url);
+  const key = isNotionFile ? parsed.origin + parsed.pathname : url;
 
-  const extension = allowedExtensions.includes(extensionFromUrl)
-    ? extensionFromUrl
-    : '.jpg';
+  const hash = createHash('sha256').update(key).digest('hex').slice(0, 12);
 
-  return `${id.replace(/-/g, '')}-${index}-${hash}${extension}`;
+  return `${id.replace(/-/g, '')}-${index}-${hash}.webp`;
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function fetchWithRetry(url: URL, attempts = 3): Promise<Response> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(20_000),
+      });
+
+      if (response.ok) return response;
+
+      // Reintentar solo errores temporales.
+      if (response.status !== 429 && response.status < 500) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt < attempts) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+    }
+  }
+
+  throw lastError;
 }
 
 async function downloadImage(
   url: string,
-  filename: string
+  filename: string,
+  kind: ImageKind
 ): Promise<string> {
   if (!url) return '';
+
+  const publicPath = `/uploads/${filename}`;
 
   try {
     const parsedUrl = new URL(url);
@@ -185,13 +229,11 @@ async function downloadImage(
 
     const filePath = path.join(UPLOAD_DIR, filename);
 
-    const response = await fetch(parsedUrl, {
-      signal: AbortSignal.timeout(20_000),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    if (await fileExists(filePath)) {
+      return publicPath;
     }
+
+    const response = await fetchWithRetry(parsedUrl);
 
     const contentType = response.headers.get('content-type') ?? '';
 
@@ -202,20 +244,30 @@ async function downloadImage(
     const buffer = Buffer.from(await response.arrayBuffer());
 
     // Evitar descargar accidentalmente archivos demasiado grandes.
-    const maxBytes = 15 * 1024 * 1024;
+    const maxBytes = 25 * 1024 * 1024;
 
     if (buffer.byteLength > maxBytes) {
-      throw new Error('La imagen supera el límite de 15 MB.');
+      throw new Error('La imagen supera el límite de 25 MB.');
     }
 
-    await fs.writeFile(filePath, buffer);
+    // Redimensionar y convertir a WebP para que el sitio cargue rápido
+    // en el celular durante el evento.
+    const size = MAX_SIZE[kind];
 
-    return `/uploads/${filename}`;
+    await sharp(buffer, { animated: false })
+      .rotate()
+      .resize({
+        width: size,
+        height: size,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: kind === 'logo' ? 90 : 80 })
+      .toFile(filePath);
+
+    return publicPath;
   } catch (error) {
-    console.error(
-      `No se pudo descargar la imagen ${filename}:`,
-      error
-    );
+    console.error(`No se pudo descargar la imagen ${filename}:`, error);
 
     return '';
   }
@@ -224,15 +276,25 @@ async function downloadImage(
 async function downloadNotionFile(
   file: NotionFile,
   pageId: string,
-  index: number
+  index: number,
+  kind: ImageKind
 ): Promise<string> {
   const url = getFileUrl(file);
 
   if (!url) return '';
 
-  const filename = stableFilename(pageId, index, url);
+  const isNotionFile = file.type === 'file' || (!file.type && !!file.file?.url);
 
-  return downloadImage(url, filename);
+  let filename: string;
+
+  try {
+    filename = stableFilename(pageId, index, url, isNotionFile);
+  } catch {
+    console.warn(`URL de imagen no válida en la página ${pageId}`);
+    return '';
+  }
+
+  return downloadImage(url, filename, kind);
 }
 
 async function getAllPages(): Promise<NotionPage[]> {
@@ -281,7 +343,7 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
     const logoFile = getFiles(props.Logo)[0];
 
     const logo = logoFile
-      ? await downloadNotionFile(logoFile, page.id, 0)
+      ? await downloadNotionFile(logoFile, page.id, 0, 'logo')
       : '';
 
     const productFiles = getFiles(props.Images);
@@ -292,7 +354,8 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
       const imageUrl = await downloadNotionFile(
         productFiles[i],
         page.id,
-        i + 1
+        i + 1,
+        'image'
       );
 
       if (imageUrl) {
@@ -316,6 +379,11 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
       socialLinks,
     });
   }
+
+  // Orden alfabético estable (Notion no garantiza un orden fijo).
+  exhibitors.sort((a, b) =>
+    a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+  );
 
   // Evitar que dos marcas compartan el mismo slug.
   const usedSlugs = new Set<string>();

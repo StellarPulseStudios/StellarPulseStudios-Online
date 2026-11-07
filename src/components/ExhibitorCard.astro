@@ -1,6 +1,7 @@
 
 ---
 import type { Exhibitor } from '../lib/notion';
+import { getSocialLinks, getWhatsappUrl } from '../lib/links';
 
 interface Props {
   item: Exhibitor;
@@ -8,27 +9,16 @@ interface Props {
 
 const { item } = Astro.props;
 
-const whatsappDigits = (item.whatsapp ?? '').replace(/\D/g, '');
+const whatsappUrl = getWhatsappUrl(item.whatsapp);
 
-const whatsappUrl = whatsappDigits
-  ? `https://wa.me/${
-      whatsappDigits.length === 10
-        ? `52${whatsappDigits}`
-        : whatsappDigits
-    }`
-  : '';
-
-const socialLinks = (item.socialLinks ?? []).map((social) => ({
-  ...social,
-  url: /^https?:\/\//i.test(social.url)
-    ? social.url
-    : `https://${social.url}`,
-}));
+// En la tarjeta solo se muestran los dos primeros canales para no saturarla;
+// la ficha completa tiene todos.
+const socialLinks = getSocialLinks(item).slice(0, 2);
 
 const profileUrl = `/emprendimientos/${item.slug}/`;
 ---
 
-<article class="exhibitor-card">
+<article class="exhibitor-card" data-category={item.category}>
   <div class="card-content">
     <div class="exhibitor-header">
       {
@@ -78,19 +68,6 @@ const profileUrl = `/emprendimientos/${item.slug}/`;
       Conocer marca →
     </a>
     
-    <!-- {
-      socialLinks.map((social) => (
-        <a
-          class="card-link"
-          href={social.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {social.platform} ↗
-        </a>
-      ))
-    }
-
     {
       whatsappUrl && (
         <a
@@ -98,10 +75,25 @@ const profileUrl = `/emprendimientos/${item.slug}/`;
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Escribir por WhatsApp a ${item.name}`}
         >
           WhatsApp ↗
         </a>
       )
-    } -->
+    }
+
+    {
+      socialLinks.map((social) => (
+        <a
+          class="card-link"
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${social.label} de ${item.name}`}
+        >
+          {social.label} ↗
+        </a>
+      ))
+    }
   </div>
 </article>
