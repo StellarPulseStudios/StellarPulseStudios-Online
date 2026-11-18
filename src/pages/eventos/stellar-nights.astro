@@ -1,0 +1,822 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { exhibitors } from '../../lib/exhibitors';
+import { getMapsEmbedUrl, getWhatsappUrl } from '../../lib/links';
+import { contact, currentEvent as event, mailto } from '../../data/site';
+
+// La sede y el patrocinador se toman del directorio (Notion) si existen.
+const venue = exhibitors.find((item) => item.slug === event.venue.slug);
+const venueMapsUrl = venue?.maps?.trim() || '';
+const venueEmbedUrl = getMapsEmbedUrl(venue?.maps_api);
+
+const sponsor = exhibitors.find((item) => item.slug === event.sponsor.slug);
+const sponsorUrl = sponsor
+  ? `/emprendimientos/${sponsor.slug}/`
+  : '/emprendimientos/';
+const sponsorWhatsapp = getWhatsappUrl(sponsor?.whatsapp);
+
+// Datos estructurados del evento para buscadores (schema.org).
+const eventData = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: event.fullName,
+  description: event.description,
+  startDate: event.startDate,
+  endDate: event.endDate,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  image: [new URL('/brand/og-default.jpg', Astro.site).href],
+  url: new URL(event.path, Astro.site).href,
+  location: {
+    '@type': 'Place',
+    name: event.venue.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Toluca',
+      addressRegion: 'Estado de México',
+      addressCountry: 'MX',
+    },
+  },
+  organizer: {
+    '@type': 'Organization',
+    name: 'Stellar Pulse Studios',
+    url: new URL('/', Astro.site).href,
+  },
+  sponsor: {
+    '@type': 'Organization',
+    name: event.sponsor.name,
+  },
+  offers: {
+    '@type': 'Offer',
+    url: event.ticketsUrl,
+    availability: 'https://schema.org/InStock',
+  },
+};
+
+const notAllowed = [
+  {
+    title: 'Ingresar alimentos o bebidas',
+    detail:
+      'Dentro encontrarás opciones de comida y bebida de nuestros emprendimientos.',
+  },
+  { title: 'Armas u objetos punzocortantes' },
+  { title: 'Drogas o sustancias ilícitas' },
+  { title: 'Ingresar en estado de ebriedad' },
+  { title: 'Mascotas', detail: 'Solo perros de asistencia.' },
+];
+
+const recommended = [
+  {
+    title: 'Compra tu boleto digital con anticipación',
+    detail: 'Ten el código QR a la mano y con el brillo de la pantalla alto.',
+  },
+  {
+    title: 'Ven en familia',
+    detail:
+      'Los menores son bienvenidos siempre que estén acompañados por un adulto, quien es responsable de ellos durante todo el evento.',
+  },
+  {
+    title: 'Conserva tu boleto',
+    detail:
+      'Puedes salir y volver a entrar; registramos cada salida y reingreso en el acceso.',
+  },
+  { title: 'Llega temprano para evitar filas' },
+  {
+    title: 'Trae abrigo',
+    detail: 'En Toluca las noches de diciembre son frías.',
+  },
+];
+
+const faqs = [
+  {
+    q: '¿Puedo salir y volver a entrar?',
+    a: 'Sí. Al salir, avisa en el acceso para que registremos tu salida y puedas volver a entrar con el mismo boleto.',
+  },
+  {
+    q: '¿Pueden ir niñas y niños?',
+    a: 'Sí, es un evento para toda la familia. Los menores deben estar acompañados en todo momento por un adulto, que es responsable de ellos durante el evento.',
+  },
+  {
+    q: '¿Cómo pago en taquilla?',
+    a: 'Por transferencia o en efectivo, sujeto a disponibilidad. Te recomendamos comprar tu boleto en línea para asegurar tu lugar y entrar más rápido.',
+  },
+  {
+    q: '¿Puedo llevar a mi mascota?',
+    a: 'No se permiten mascotas, con excepción de perros de asistencia.',
+  },
+  {
+    q: '¿Qué pasa si llueve?',
+    a: `El evento se realiza aunque llueva. La sede cuenta con salón además del jardín, así que tomaremos las medidas necesarias para que sigas disfrutando. Si hubiera algún cambio, lo avisaremos en nuestro Instagram ${contact.instagramHandle}.`,
+  },
+  {
+    q: '¿Cómo participo con mi emprendimiento en la próxima edición?',
+    a: `Escríbenos a ${contact.email} y te avisamos de la próxima convocatoria.`,
+  },
+];
+---
+
+<Layout
+  title={`${event.fullName} · 5 de diciembre | Stellar Pulse`}
+  description={`${event.description} Boletos, horario, lineamientos de acceso y cómo llegar.`}
+>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(eventData)}
+  />
+
+  <section class="ev-hero">
+    <div class="container ev-grid">
+      <div class="ev-copy">
+        <span class="ev-kicker">
+          ✦ Stellar Pulse presenta · Presentado por {event.sponsor.name}
+        </span>
+
+        <h1>
+          Stellar
+          <span>Nights</span>
+        </h1>
+
+        <div class="ev-edition">{event.edition}</div>
+
+        <p class="ev-lead">
+          Una noche navideña con emprendimientos locales, comida, bebidas y
+          música. Ven por la experiencia, quédate por la gente.
+        </p>
+
+        <div class="ev-actions">
+          <a
+            href={event.ticketsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button button-primary"
+          >
+            Comprar boleto digital <span aria-hidden="true">↗</span>
+          </a>
+          <a href="/emprendimientos/" class="button button-secondary">
+            Ver participantes
+          </a>
+        </div>
+      </div>
+
+      <dl class="ev-facts">
+        <div class="fact">
+          <dt>Fecha</dt>
+          <dd>{event.dateLabel}</dd>
+        </div>
+        <div class="fact">
+          <dt>Horario</dt>
+          <dd>{event.timeLabel}</dd>
+        </div>
+        <div class="fact">
+          <dt>Sede</dt>
+          <dd>{event.venue.name}<small>{event.venue.city}</small></dd>
+        </div>
+        <div class="fact">
+          <dt>Boletos</dt>
+          <dd>Digital en Tickean<small>Taquilla sujeta a disponibilidad</small></dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <nav class="ev-subnav" aria-label="Secciones del evento">
+    <div class="container">
+      <a href="#boletos">Boletos</a>
+      <a href="#lineamientos">Lineamientos</a>
+      <a href="#patrocinador">Patrocinador</a>
+      <a href="#como-llegar">Cómo llegar</a>
+      <a href="#preguntas">Preguntas</a>
+    </div>
+  </nav>
+
+  <section class="ev-section" id="boletos">
+    <div class="container">
+      <span class="eyebrow">Boletos</span>
+      <h2 class="ev-title">Compra tu boleto digital y entra sin filas.</h2>
+
+      <div class="tickets">
+        <div class="ticket ticket-recommended">
+          <span class="badge">Recomendado</span>
+          <h3>Boleto digital</h3>
+          <ul>
+            <li>Lugar asegurado aunque se agote la taquilla.</li>
+            <li>Acceso más rápido: muestras el QR en tu celular.</li>
+            <li>Compra segura en Tickean.</li>
+          </ul>
+          <a
+            href={event.ticketsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button button-primary"
+          >
+            Comprar en Tickean <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <div class="ticket">
+          <h3>Taquilla el día del evento</h3>
+          <ul>
+            <li>Sujeta a disponibilidad.</li>
+            <li>Pago por transferencia o en efectivo.</li>
+            <li>Puede haber fila en las horas de mayor afluencia.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ev-section" id="lineamientos">
+    <div class="container">
+      <span class="eyebrow">Lineamientos de acceso</span>
+      <h2 class="ev-title">Para que todos la pasemos bien</h2>
+      <p class="ev-sub">
+        Habrá revisión en el acceso. Al entrar aceptas estos lineamientos.
+      </p>
+
+      <div class="rules">
+        <div class="rule-col rule-no">
+          <h3><span aria-hidden="true">✕</span> No está permitido</h3>
+          <ul>
+            {notAllowed.map((rule) => (
+              <li>
+                {rule.title}
+                {rule.detail && <small>{rule.detail}</small>}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="rule-col rule-yes">
+          <h3><span aria-hidden="true">✓</span> Te recomendamos</h3>
+          <ul>
+            {recommended.map((rule) => (
+              <li>
+                {rule.title}
+                {rule.detail && <small>{rule.detail}</small>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ev-section" id="patrocinador">
+    <div class="container">
+      <span class="eyebrow">Patrocinador oficial</span>
+
+      <div class="sponsor">
+        <div class="sponsor-plate">
+          <img
+            src={event.sponsor.logo}
+            width="480"
+            height="416"
+            alt={event.sponsor.name}
+            loading="lazy"
+          />
+        </div>
+        <div class="sponsor-msg">
+          <h2>Las grandes ideas crecen cuando hay quienes creen en ellas.</h2>
+          <p>
+            {event.sponsor.name} hace posible esta edición y apoya el talento
+            emprendedor de Toluca. Gracias por construir comunidad con
+            nosotros.
+          </p>
+          <div class="sponsor-links">
+            <a href={sponsorUrl} class="button button-primary">
+              Conoce a {event.sponsor.name}
+            </a>
+            {
+              sponsorWhatsapp && (
+                <a
+                  href={sponsorWhatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="button button-secondary"
+                >
+                  WhatsApp
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ev-section" id="como-llegar">
+    <div class="container">
+      <span class="eyebrow">Cómo llegar</span>
+      <div class="venue">
+        <div class="venue-info">
+          <h2 class="ev-title">{event.venue.name}</h2>
+          <p>
+            {event.venue.city}. Salón, jardín y estacionamiento. Gracias por
+            abrirnos sus puertas.
+          </p>
+          <div class="venue-links">
+            {
+              venueMapsUrl && (
+                <a
+                  href={venueMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="button button-primary"
+                >
+                  Abrir en Google Maps <span aria-hidden="true">↗</span>
+                </a>
+              )
+            }
+            {
+              venue && (
+                <a href={`/emprendimientos/${venue.slug}/`} class="button button-secondary">
+                  Ver la sede
+                </a>
+              )
+            }
+          </div>
+        </div>
+        {
+          venueEmbedUrl && (
+            <div class="venue-map">
+              <iframe
+                src={venueEmbedUrl}
+                title={`Mapa de ${event.venue.name}`}
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+              ></iframe>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="ev-section" id="preguntas">
+    <div class="container ev-narrow">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2 class="ev-title">Lo que más nos preguntan</h2>
+      <div class="faq">
+        {faqs.map((faq, index) => (
+          <details open={index === 0}>
+            <summary>{faq.q}</summary>
+            <p>{faq.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="faq-more">
+        ¿Otra duda? Escríbenos a{' '}
+        <a href={mailto(`Duda sobre ${event.fullName}`)}>{contact.email}</a>
+        {' '}o por Instagram{' '}
+        <a href={contact.instagram} target="_blank" rel="noopener noreferrer">
+          {contact.instagramHandle}
+        </a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="ev-final">
+    <div class="container">
+      <p>Nos vemos el 5 de diciembre.</p>
+      <a
+        href={event.ticketsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="button button-primary"
+      >
+        Comprar boleto digital <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ev-hero {
+    padding: 72px 0 64px;
+    background:
+      radial-gradient(ellipse at 80% 10%, rgba(102, 85, 158, 0.32), transparent 45%),
+      radial-gradient(ellipse at 0% 100%, rgba(244, 198, 106, 0.08), transparent 40%);
+  }
+
+  .ev-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+
+  .ev-kicker {
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .ev-hero h1 {
+    display: flex;
+    flex-direction: column;
+    margin: 14px 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(3.4rem, 9vw, 7rem);
+    font-weight: 800;
+    line-height: 0.86;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+  }
+
+  .ev-hero h1 span {
+    color: var(--accent);
+  }
+
+  .ev-edition {
+    margin-top: 16px;
+    color: #e2e6f0;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .ev-lead {
+    max-width: 480px;
+    margin: 18px 0 0;
+    color: var(--muted);
+  }
+
+  .ev-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .ev-facts {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(17, 23, 41, 0.75);
+  }
+
+  .fact {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fact:last-child {
+    border-bottom: 0;
+  }
+
+  .fact dt {
+    padding-top: 3px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .fact dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .fact small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+  .ev-subnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-block: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(11, 16, 32, 0.94);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .ev-subnav .container {
+    display: flex;
+    gap: 8px;
+    padding: 10px 0;
+    overflow-x: auto;
+  }
+
+  .ev-subnav a {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .ev-subnav a:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .ev-section {
+    padding: 72px 0 0;
+    scroll-margin-top: 56px;
+  }
+
+  .ev-title {
+    margin: 10px 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .ev-sub {
+    margin: 10px 0 0;
+    color: var(--muted);
+  }
+
+  .ev-narrow {
+    max-width: 760px;
+  }
+
+  /* Boletos */
+  .tickets {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .ticket {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 14px;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .ticket-recommended {
+    border-color: rgba(244, 198, 106, 0.5);
+    background: linear-gradient(160deg, rgba(244, 198, 106, 0.12), var(--surface) 60%);
+  }
+
+  .ticket h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+
+  .ticket ul {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--accent);
+    color: #17120a;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Lineamientos */
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .rule-col {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .rule-col h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+  }
+
+  .rule-col h3 span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+  }
+
+  .rule-no h3 span {
+    background: rgba(240, 138, 126, 0.15);
+    color: #f08a7e;
+  }
+
+  .rule-yes h3 span {
+    background: rgba(127, 209, 168, 0.15);
+    color: #7fd1a8;
+  }
+
+  .rule-col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rule-col li {
+    display: grid;
+    gap: 2px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .rule-col small {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* Patrocinador */
+  .sponsor {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    margin-top: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(244, 198, 106, 0.25);
+    border-radius: 24px;
+  }
+
+  .sponsor-plate {
+    display: grid;
+    place-items: center;
+    padding: 40px;
+    background: #fff;
+  }
+
+  .sponsor-plate img {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .sponsor-msg {
+    display: grid;
+    align-content: center;
+    gap: 16px;
+    padding: 40px;
+    background: linear-gradient(120deg, #121b30, #0c1222);
+  }
+
+  .sponsor-msg h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .sponsor-msg p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .sponsor-links,
+  .venue-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Cómo llegar */
+  .venue {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .venue-info {
+    display: grid;
+    gap: 16px;
+  }
+
+  .venue-info p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .venue-map {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    aspect-ratio: 16 / 10;
+    max-width: 100%;
+  }
+
+  .venue-map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Preguntas */
+  .faq {
+    margin-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .faq details {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .faq summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .faq details p {
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+
+  .faq-more {
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .faq-more a {
+    color: var(--accent);
+  }
+
+  .ev-final {
+    padding: 80px 0 90px;
+    text-align: center;
+  }
+
+  .ev-final p {
+    margin: 0 0 18px;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    font-weight: 800;
+  }
+
+  @media (max-width: 860px) {
+    .ev-grid,
+    .tickets,
+    .rules,
+    .sponsor,
+    .venue {
+      grid-template-columns: 1fr;
+    }
+
+    .sponsor-plate {
+      padding: 28px;
+    }
+
+    .sponsor-msg {
+      padding: 28px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .fact {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+
+    .ev-actions .button {
+      width: 100%;
+    }
+  }
+</style>

@@ -14,6 +14,13 @@
   --accent-soft: rgba(244, 198, 106, 0.12);
 
   --radius: 18px;
+
+  --font-display:
+    "Bricolage Grotesque",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
   --max-width: 1180px;
 }
 
@@ -597,6 +604,47 @@ button:focus-visible {
 /* =========================================
    PIE DE PÁGINA
    ========================================= */
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 20px;
+
+  margin: 14px 0;
+
+  font-size: 0.85rem;
+}
+
+.footer-links a {
+  color: var(--muted);
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+.footer-mail {
+  user-select: all;
+}
+
+/* Botón de boletos en el menú */
+
+.main-nav a.nav-tickets {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #17120a;
+}
+
+.main-nav a.nav-tickets:hover {
+  background: #ffda8b;
+  color: #17120a;
+}
+
+.main-nav a[aria-current="page"] {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.045);
+}
 
 .site-footer {
   padding: 45px 24px;
