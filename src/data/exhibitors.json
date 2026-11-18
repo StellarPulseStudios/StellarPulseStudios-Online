@@ -1,113 +1,27 @@
 [
   {
-    "id": "40a62b2b-f90e-808f-9e3b-f4e12831159a",
-    "name": "V E L ꓥ Shop",
-    "slug": "v-e-l-shop",
-    "category": "Ropa",
-    "description": "Estilo sin complicaciones",
-    "whatsapp": "",
-    "maps": "",
-    "maps_api": "",
-    "logo": "",
-    "images": [
-      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-1-c6e34fbdeb2f.jpeg"
-    ],
-    "promo": "",
-    "code": "",
-    "socialLinks": [
-      {
-        "platform": "Instagram",
-        "url": "https://www.instagram.com/vela_s.hop/",
-        "order": 1
-      },
-      {
-        "platform": "Facebook",
-        "url": "https://www.facebook.com/profile.php?id=61594848345767",
-        "order": 2
-      }
-    ]
-  },
-  {
-    "id": "40a62b2b-f90e-802e-8896-d6e95b4faa74",
-    "name": "Rene",
-    "slug": "rene",
-    "category": "Accesorios",
-    "description": "Joyas artesanales.",
-    "whatsapp": "",
-    "maps": "",
-    "maps_api": "",
-    "logo": "",
-    "images": [
-      "/uploads/40a62b2bf90e802e8896d6e95b4faa74-1-8ddaeb3b70aa.jpeg"
-    ],
-    "promo": "",
-    "code": "",
-    "socialLinks": []
-  },
-  {
-    "id": "40a62b2b-f90e-806d-9733-c4380887162f",
-    "name": "Moqui",
-    "slug": "moqui",
-    "category": "Cafetería",
-    "description": "Cafetería de especialidad.",
-    "whatsapp": "",
-    "maps": "https://maps.app.goo.gl/VrzinNnPd1s2ftxt5",
-    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.331280463864!2d-99.57738978871365!3d19.26795458190129!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8b522cf8f8a3%3A0x6fe8d8d4be2056df!2sMoqui%20Coffee!5e0!3m2!1sen!2smx!4v1793415837166!5m2!1sen!2smx",
-    "logo": "",
-    "images": [
-      "/uploads/40a62b2bf90e806d9733c4380887162f-1-3ce32100cd9c.jpeg"
-    ],
-    "promo": "",
-    "code": "",
-    "socialLinks": [
-      {
-        "platform": "Instagram",
-        "url": "https://www.instagram.com/moqui.coffee/",
-        "order": 1
-      },
-      {
-        "platform": "Facebook",
-        "url": "https://www.facebook.com/people/Moqui-Coffee/61554410750351/",
-        "order": 2
-      }
-    ]
-  },
-  {
-    "id": "40a62b2b-f90e-8085-a4ec-ea2b343a8799",
-    "name": "Malka",
-    "slug": "malka",
-    "category": "Comida",
-    "description": "Miel mantequilla multiflor 100% cruda",
-    "whatsapp": "",
-    "maps": "",
-    "maps_api": "",
-    "logo": "",
-    "images": [
-      "/uploads/40a62b2bf90e8085a4ecea2b343a8799-1-337b5fdc6b3a.jpeg"
-    ],
-    "promo": "",
-    "code": "",
-    "socialLinks": [
-      {
-        "platform": "Instagram",
-        "url": "https://www.instagram.com/malka.miel/",
-        "order": 1
-      }
-    ]
-  },
-  {
     "id": "40a62b2b-f90e-80eb-acfb-f0e12ef3b393",
     "name": "Alfoli",
     "slug": "alfoli",
     "category": "Repostería",
-    "description": "Panadería y repostería artesanal.",
-    "whatsapp": "",
+    "description": "Alfolí es una marca de bollería artesanal con espíritu de taller. Su nombre viene del granero donde antes se guardaba el grano, y de esa idea nace todo lo que hacemos: masas trabajadas con tiempo, ingredientes cuidados y mucho cariño en cada pieza. Todo se elabora bajo pedido, en pequeñas tandas, para que llegue fresco y a tu gusto. Escríbenos y cuéntanos qué se te antoja para tu mesa o tu evento.",
+    "whatsapp": "7223009903",
     "maps": "",
     "maps_api": "",
-    "logo": "",
+    "logo": "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-0-64470fa8225b.webp",
     "images": [
-      "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-1-6618d0a5d351.jpeg"
+      "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-1-2379572710de.webp"
     ],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-0-64470fa8225b.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40a62b2bf90e80ebacfbf0e12ef3b393-1-2379572710de.webp": {
+        "width": 738,
+        "height": 414
+      }
+    },
     "promo": "",
     "code": "",
     "socialLinks": [
@@ -115,6 +29,128 @@
         "platform": "Instagram",
         "url": "https://www.instagram.com/alfoli.bake/",
         "order": 1
+      }
+    ]
+  },
+  {
+    "id": "41a62b2b-f90e-800e-8cc3-c713ad5ba91d",
+    "name": "El Changarrito del Diablo",
+    "slug": "el-changarrito-del-diablo",
+    "category": "Artesanías",
+    "description": "",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/41a62b2bf90e800e8cc3c713ad5ba91d-0-60e91b251050.webp",
+    "images": [
+      "/uploads/41a62b2bf90e800e8cc3c713ad5ba91d-1-e1a99d413ad0.webp"
+    ],
+    "imageSizes": {
+      "/uploads/41a62b2bf90e800e8cc3c713ad5ba91d-0-60e91b251050.webp": {
+        "width": 386,
+        "height": 400
+      },
+      "/uploads/41a62b2bf90e800e8cc3c713ad5ba91d-1-e1a99d413ad0.webp": {
+        "width": 1600,
+        "height": 1352
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": []
+  },
+  {
+    "id": "40a62b2b-f90e-802e-8896-d6e95b4faa74",
+    "name": "El Hipopótamo Azul",
+    "slug": "el-hipopotamo-azul",
+    "category": "Comida",
+    "description": "El Hipopótamo Azul es un restaurante y bar muy popular ubicado en la zona universitaria de Toluca, Estado de México. Destaca principalmente por su concepto inclusivo centrado en la comida vegana. complementado con una excelente propuesta de cerveza artesanal y pizzas.\n\nEnfoque Gastronómico Único: A diferencia de la mayoría de los lugares que ofrecen solo una opción vegetariana en su menú, aquí la dinámica se invierte por completo. Prácticamente toda su propuesta es apta para veganos, manejando de forma muy excepcional platillos que no lo sean.\n",
+    "whatsapp": "7291195215",
+    "maps": "https://maps.app.goo.gl/2Sx6Lve4atwtifZZ8",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.38034213277803!2d-99.65121307847834!3d19.278648836634368!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd89a007e0f2c9%3A0xed79999c6ad47300!2sEl%20Hipop%C3%B3tamo%20Azul!5e0!3m2!1sen!2smx!4v1793932551170!5m2!1sen!2smx",
+    "logo": "/uploads/40a62b2bf90e802e8896d6e95b4faa74-0-80a636c7d3ba.webp",
+    "images": [],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e802e8896d6e95b4faa74-0-80a636c7d3ba.webp": {
+        "width": 400,
+        "height": 400
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/el_hipopotamo_azul?psln=cThodTR1dnU0bTM4",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/share/1BSac6z8uw/",
+        "order": 2
+      },
+      {
+        "platform": "TikTok",
+        "url": "https://www.tiktok.com/@elhipoptamoazul?_r=1&_t=ZS-9BAF7iTRTOM",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-80ea-a8e1-ce43342ecef7",
+    "name": "Finca San Blas",
+    "slug": "finca-san-blas",
+    "category": "Salón de Eventos",
+    "description": "¿Planeas un evento? Hazlo sencillo. Un espacio privado con salón, jardín, estacionamiento, cocina, barra, mobiliario, audio e iluminación. Menos proveedores. Menos complicaciones!",
+    "whatsapp": "7228406785",
+    "maps": "https://maps.app.goo.gl/whqMboGdPpG7icto8",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30136.95256969545!2d-99.72045519716998!3d19.233641759213242!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd897df4e3cb4b%3A0xca1afac4d7bda372!2sSal%C3%B3n%20San%20Blas!5e0!3m2!1sen!2smx!4v1793419284726!5m2!1sen!2smx",
+    "logo": "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-0-b367cfbedb05.webp",
+    "images": [
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-1-c17b3de004ac.webp",
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-2-82309156b1f6.webp",
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-3-8fea9fe6ca27.webp",
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-4-93a3ae5c9e3f.webp"
+    ],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-0-b367cfbedb05.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-1-c17b3de004ac.webp": {
+        "width": 1080,
+        "height": 1350
+      },
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-2-82309156b1f6.webp": {
+        "width": 1600,
+        "height": 900
+      },
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-3-8fea9fe6ca27.webp": {
+        "width": 1600,
+        "height": 1200
+      },
+      "/uploads/40a62b2bf90e80eaa8e1ce43342ecef7-4-93a3ae5c9e3f.webp": {
+        "width": 1200,
+        "height": 1600
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/finca_san_blas/",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61594294288989",
+        "order": 2
+      },
+      {
+        "platform": "Website",
+        "url": "https://fincasanblas.github.io/site/",
+        "order": 4
       }
     ]
   },
@@ -127,10 +163,20 @@
     "whatsapp": "7221866212",
     "maps": "https://maps.app.goo.gl/cbwvHzjhE6gtGDCd7",
     "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2697.066844023054!2d-99.6640723!3d19.2786231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8900197f654d%3A0x74a37bcc5c5a44c4!2sLe%20Tuitui%20Postres!5e1!3m2!1ses!2smx!4v1793415776241!5m2!1ses!2smx",
-    "logo": "/uploads/40662b2bf90e805aa0fffb602ad4dad6-0-c905ab169a2a.jpg",
+    "logo": "/uploads/40662b2bf90e805aa0fffb602ad4dad6-0-19aa00e125d7.webp",
     "images": [
-      "/uploads/40662b2bf90e805aa0fffb602ad4dad6-1-6d466eddea58.jpg"
+      "/uploads/40662b2bf90e805aa0fffb602ad4dad6-1-c5f2f3e13d4a.webp"
     ],
+    "imageSizes": {
+      "/uploads/40662b2bf90e805aa0fffb602ad4dad6-0-19aa00e125d7.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40662b2bf90e805aa0fffb602ad4dad6-1-c5f2f3e13d4a.webp": {
+        "width": 640,
+        "height": 480
+      }
+    },
     "promo": "",
     "code": "",
     "socialLinks": [
@@ -147,6 +193,140 @@
     ]
   },
   {
+    "id": "41a62b2b-f90e-805a-8d8d-fec3c7e45571",
+    "name": "Los Plebes",
+    "slug": "los-plebes",
+    "category": "Comida",
+    "description": "🔥🥩 LOS PLEBES ¡EL FUEGO ES LO NUESTRO! 🔥\n\nNo solo hacemos carnes asadas, ¡creamos experiencias que se disfrutan hasta el último bocado! En Los Plebes transformamos el fuego en sabor, combinando cortes irresistibles, carnes jugosas y el auténtico toque de la parrilla. Llevamos nuestras taquizas y parrilladas a domicilio para conquistar paladares y encender cualquier celebración.🔥 En los plebes no solo servimos carne, dejamos huella en cada parrillada.",
+    "whatsapp": "7223747311",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-0-0ca59348e809.webp",
+    "images": [
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-1-808090d94d53.webp",
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-2-cae0ec3a5fc6.webp",
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-3-b45fa933a9a1.webp",
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-4-00e9d96e7de9.webp",
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-5-40aa612b72d5.webp",
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-6-ca314a99ca70.webp"
+    ],
+    "imageSizes": {
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-0-0ca59348e809.webp": {
+        "width": 400,
+        "height": 232
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-1-808090d94d53.webp": {
+        "width": 1100,
+        "height": 829
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-2-cae0ec3a5fc6.webp": {
+        "width": 1086,
+        "height": 1448
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-3-b45fa933a9a1.webp": {
+        "width": 1100,
+        "height": 769
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-4-00e9d96e7de9.webp": {
+        "width": 580,
+        "height": 630
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-5-40aa612b72d5.webp": {
+        "width": 1100,
+        "height": 1076
+      },
+      "/uploads/41a62b2bf90e805a8d8dfec3c7e45571-6-ca314a99ca70.webp": {
+        "width": 548,
+        "height": 365
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/losplebes.metepec/?utm_source=ig_web_button_share_sheet",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/share/1GXW386e74/",
+        "order": 2
+      },
+      {
+        "platform": "TikTok",
+        "url": "https://www.tiktok.com/@los_plebes_metepec",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-8085-a4ec-ea2b343a8799",
+    "name": "Malka",
+    "slug": "malka",
+    "category": "Comida",
+    "description": "Miel mantequilla multiflor 100% cruda.",
+    "whatsapp": "",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/40a62b2bf90e8085a4ecea2b343a8799-0-5c6b74c0507e.webp",
+    "images": [
+      "/uploads/40a62b2bf90e8085a4ecea2b343a8799-1-e8b5ebcbc62f.webp"
+    ],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e8085a4ecea2b343a8799-0-5c6b74c0507e.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40a62b2bf90e8085a4ecea2b343a8799-1-e8b5ebcbc62f.webp": {
+        "width": 738,
+        "height": 414
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/malka.miel/",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "id": "40062b2b-f90e-8046-95d0-f6366588b76a",
+    "name": "MAPA",
+    "slug": "mapa",
+    "category": "Tecnologías",
+    "description": "Somos MAPA",
+    "whatsapp": "7227935036",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/40062b2bf90e804695d0f6366588b76a-0-a789a81ba9b9.webp",
+    "images": [
+      "/uploads/40062b2bf90e804695d0f6366588b76a-1-8033cba2b7b8.webp"
+    ],
+    "imageSizes": {
+      "/uploads/40062b2bf90e804695d0f6366588b76a-0-a789a81ba9b9.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40062b2bf90e804695d0f6366588b76a-1-8033cba2b7b8.webp": {
+        "width": 640,
+        "height": 480
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/finca_san_blas/",
+        "order": 1
+      }
+    ]
+  },
+  {
     "id": "40662b2b-f90e-80f9-8282-e68ef9548d23",
     "name": "Materiales Pérez",
     "slug": "materiales-perez",
@@ -155,11 +335,20 @@
     "whatsapp": "7228436063",
     "maps": "https://maps.app.goo.gl/XckNtZC7Qo4g9M5ZA",
     "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.303927614748!2d-99.68795410000001!3d19.269144900000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8857332672e1%3A0xf17ad050219380f3!2sMateriales%20Perez%2C%20S.A.%20de%20C.V.!5e0!3m2!1sen!2smx!4v1793414693448!5m2!1sen!2smx",
-    "logo": "/uploads/40662b2bf90e80f98282e68ef9548d23-0-ae6c3d844822.png",
+    "logo": "/uploads/40662b2bf90e80f98282e68ef9548d23-0-9bd1da6353ca.webp",
     "images": [
-      "/uploads/40662b2bf90e80f98282e68ef9548d23-1-8f38841b6da2.jpeg",
-      "/uploads/40662b2bf90e80f98282e68ef9548d23-2-20641056dd15.jpeg"
+      "/uploads/40662b2bf90e80f98282e68ef9548d23-1-5e13f37fae87.webp"
     ],
+    "imageSizes": {
+      "/uploads/40662b2bf90e80f98282e68ef9548d23-0-9bd1da6353ca.webp": {
+        "width": 400,
+        "height": 400
+      },
+      "/uploads/40662b2bf90e80f98282e68ef9548d23-1-5e13f37fae87.webp": {
+        "width": 1600,
+        "height": 900
+      }
+    },
     "promo": "",
     "code": "",
     "socialLinks": [
@@ -176,25 +365,128 @@
     ]
   },
   {
-    "id": "40062b2b-f90e-8046-95d0-f6366588b76a",
-    "name": "MAPA",
-    "slug": "mapa",
-    "category": "Tecnologías",
-    "description": "Somos MAPA",
-    "whatsapp": "7227935036",
-    "maps": "",
-    "maps_api": "",
-    "logo": "/uploads/40062b2bf90e804695d0f6366588b76a-0-0f51e28f421f.png",
+    "id": "40a62b2b-f90e-806d-9733-c4380887162f",
+    "name": "Moqui",
+    "slug": "moqui",
+    "category": "Cafetería",
+    "description": "Moqui Coffee es una marca de café de especialidad nacida en 2023 en Metepec. Su propuesta parte de los detalles: espresso bien calibrado, recetas propias hechas en casa y un trato cercano que invita a quedarse. Busca que cada taza la disfrute igual quien apenas descubre el café de especialidad que quien ya lo conoce a fondo. Además de la cafetería, lleva la experiencia Moqui a eventos con su barra móvil de café.",
+    "whatsapp": "7223011343",
+    "maps": "https://maps.app.goo.gl/VrzinNnPd1s2ftxt5",
+    "maps_api": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.331280463864!2d-99.57738978871365!3d19.26795458190129!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8b522cf8f8a3%3A0x6fe8d8d4be2056df!2sMoqui%20Coffee!5e0!3m2!1sen!2smx!4v1793415837166!5m2!1sen!2smx",
+    "logo": "/uploads/40a62b2bf90e806d9733c4380887162f-0-d4525d45a085.webp",
     "images": [
-      "/uploads/40062b2bf90e804695d0f6366588b76a-1-dc59c5afaca9.jpg"
+      "/uploads/40a62b2bf90e806d9733c4380887162f-1-216e5e92978e.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-2-3fcf622d9259.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-3-dda36beb6857.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-4-7e32f1e136a0.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-5-e290b7e7e273.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-6-aada4addff5d.webp",
+      "/uploads/40a62b2bf90e806d9733c4380887162f-7-06114cb3f966.webp"
     ],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e806d9733c4380887162f-0-d4525d45a085.webp": {
+        "width": 400,
+        "height": 300
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-1-216e5e92978e.webp": {
+        "width": 1067,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-2-3fcf622d9259.webp": {
+        "width": 1067,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-3-dda36beb6857.webp": {
+        "width": 1067,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-4-7e32f1e136a0.webp": {
+        "width": 1200,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-5-e290b7e7e273.webp": {
+        "width": 1067,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-6-aada4addff5d.webp": {
+        "width": 1067,
+        "height": 1600
+      },
+      "/uploads/40a62b2bf90e806d9733c4380887162f-7-06114cb3f966.webp": {
+        "width": 1200,
+        "height": 1600
+      }
+    },
     "promo": "",
     "code": "",
     "socialLinks": [
       {
         "platform": "Instagram",
-        "url": "https://www.instagram.com/finca_san_blas/",
+        "url": "https://www.instagram.com/moqui.coffee/",
         "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/people/Moqui-Coffee/61554410750351/",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "id": "40a62b2b-f90e-808f-9e3b-f4e12831159a",
+    "name": "V E L ꓥ Shop",
+    "slug": "v-e-l-shop",
+    "category": "Ropa",
+    "description": "Estilo sin complicaciones.\n\nVela nace de la idea de ofrecer estilo sin complicaciones. Ofrecemos ropa cómoda, bonita, de buena calidad y a precios accesibles, seleccionada para que vestir bien sea fácil y esté al alcance de todos. Queremos acercar opciones que combinen comodidad, estilo y valor para el día a día. Detrás de este proyecto estamos una pareja que decidió convertir uno de sus mayores sueños en realidad: emprender y construir algo propio.\n",
+    "whatsapp": "7221195169",
+    "maps": "",
+    "maps_api": "",
+    "logo": "/uploads/40a62b2bf90e808f9e3bf4e12831159a-0-8840b54c3c8d.webp",
+    "images": [
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-1-40f97ffd3b9e.webp",
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-2-5c5cda56dc47.webp",
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-3-0875bce031ef.webp",
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-4-c0714be52722.webp",
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-5-1f90c6a7aba9.webp"
+    ],
+    "imageSizes": {
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-0-8840b54c3c8d.webp": {
+        "width": 400,
+        "height": 399
+      },
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-1-40f97ffd3b9e.webp": {
+        "width": 1200,
+        "height": 630
+      },
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-2-5c5cda56dc47.webp": {
+        "width": 1200,
+        "height": 630
+      },
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-3-0875bce031ef.webp": {
+        "width": 1200,
+        "height": 630
+      },
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-4-c0714be52722.webp": {
+        "width": 1200,
+        "height": 630
+      },
+      "/uploads/40a62b2bf90e808f9e3bf4e12831159a-5-1f90c6a7aba9.webp": {
+        "width": 1200,
+        "height": 630
+      }
+    },
+    "promo": "",
+    "code": "",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/vela_s.hop/",
+        "order": 1
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61594848345767",
+        "order": 2
       }
     ]
   }
