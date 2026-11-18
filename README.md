@@ -63,8 +63,14 @@ ejecuta `npm run build` y publica la carpeta `dist/`.
 
 Variables de **build** del Worker (*Settings → Builds → Variables*):
 `NOTION_API_KEY`, `NOTION_DATABASE_ID` y `SITE_URL`
-(`https://stellarpulsestudios-web.stellarpstudios.workers.dev` mientras no
-haya dominio propio).
+(`https://stellarpulsestudios.com`).
+
+### Dominio
+
+El sitio se sirve en **https://stellarpulsestudios.com**, conectado como
+*Custom Domain* del Worker (*Settings → Domains & Routes*). `www` redirige al
+dominio principal. La dirección `*.workers.dev` sigue respondiendo, pero la URL
+canónica y el sitemap apuntan al dominio propio.
 
 Los builds de vista previa de otras ramas pueden fallar si esas variables solo
 están disponibles para producción; eso no afecta al sitio publicado.
