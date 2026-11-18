@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { contact, currentEvent } from '../data/site';
 
 interface Props {
   title?: string;
@@ -15,6 +16,9 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
 const imageUrl = new URL(image, Astro.site);
 ---
 
@@ -33,6 +37,13 @@ const imageUrl = new URL(image, Astro.site);
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap"
+    />
 
     <!-- Vista previa al compartir en WhatsApp, Instagram, Facebook, etc. -->
     <meta property="og:type" content="website" />
@@ -68,7 +79,7 @@ const imageUrl = new URL(image, Astro.site);
 
         <span class="brand-text">
           <strong>STELLAR PULSE</strong>
-          <small>Emprendimientos &amp; experiencias</small>
+          <small>Experiencias que conectan</small>
         </span>
       </a>
 
@@ -94,14 +105,34 @@ const imageUrl = new URL(image, Astro.site);
         aria-label="Navegación principal"
         data-open="false"
       >
-        <a href="/" data-nav-link>Inicio</a>
+        <a href="/" data-nav-link aria-current={isCurrent('/') ? 'page' : undefined}>Inicio</a>
 
-        <a href="/emprendimientos/" data-nav-link>
+        <a href="/#nosotros" data-nav-link>Nosotros</a>
+
+        <a
+          href="/emprendimientos/"
+          data-nav-link
+          aria-current={isCurrent('/emprendimientos/') ? 'page' : undefined}
+        >
           Emprendimientos
         </a>
 
-        <a href="/#evento" data-nav-link>
-          El evento
+        <a
+          href={currentEvent.path}
+          data-nav-link
+          aria-current={isCurrent('/eventos/') ? 'page' : undefined}
+        >
+          {currentEvent.name}
+        </a>
+
+        <a
+          href={currentEvent.ticketsUrl}
+          class="nav-tickets"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-nav-link
+        >
+          Boletos <span aria-hidden="true">↗</span>
         </a>
       </nav>
     </header>
@@ -118,6 +149,16 @@ const imageUrl = new URL(image, Astro.site);
       <p>
         Una comunidad que conecta emprendimientos, experiencias y personas.
       </p>
+
+      <nav class="footer-links" aria-label="Enlaces del pie de página">
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/emprendimientos/">Emprendimientos</a>
+        <a href={currentEvent.path}>{currentEvent.name}</a>
+        <a href="/#colabora">Colabora</a>
+        <a href={contact.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+      </nav>
+
+      <p class="footer-mail">{contact.email}</p>
 
       <small>
         © {new Date().getFullYear()} Stellar Pulse
