@@ -119,7 +119,14 @@ Para conectarla (una sola vez, la cuenta debe ser profesional):
 3. En Cloudflare: Worker → *Settings → Builds → Variables* → agrega el
    secreto `INSTAGRAM_ACCESS_TOKEN` con ese token y vuelve a publicar.
 
-El token dura 60 días y cada build lo renueva. Si Instagram falla o falta el
+También sirve un token de Facebook (empieza con `EAA`) si la cuenta de
+Instagram está vinculada a una página de Facebook y el token tiene los permisos
+`instagram_basic`, `pages_show_list` y `pages_read_engagement`. Conviene un
+token de **página** de larga duración, porque el del Graph API Explorer caduca
+en una o dos horas. El ID de la cuenta se busca solo; si falla, ponlo en
+`INSTAGRAM_USER_ID`.
+
+El token de Instagram (`IG…`) dura 60 días y cada build lo renueva. Si Instagram falla o falta el
 token, el build no se detiene: se conservan los últimos datos y la sección se
 muestra con el botón y el QR. Si en el log del build aparece «Instagram
 devolvió un token nuevo», genera otro token en Meta y reemplázalo en Cloudflare.
