@@ -20,15 +20,21 @@ import sharp from 'sharp';
 
 import type { InstagramData, InstagramPost } from '../src/lib/instagram';
 
-const API = 'https://graph.instagram.com';
+const INSTAGRAM_API = 'https://graph.instagram.com';
+// Tokens "EAA…" (Instagram API con inicio de sesión de Facebook).
+const FACEBOOK_API = 'https://graph.facebook.com/v23.0';
 const POST_LIMIT = 12;
 
 const DATA_FILE = path.join(process.cwd(), 'src', 'data', 'instagram.json');
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'instagram');
 const PUBLIC_DIR = '/uploads/instagram';
 
-async function api<T>(endpoint: string, params: Record<string, string>): Promise<T> {
-  const url = new URL(endpoint, API);
+async function api<T>(
+  endpoint: string,
+  params: Record<string, string>,
+  base = INSTAGRAM_API
+): Promise<T> {
+  const url = new URL(base + endpoint);
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
 
   const response = await fetch(url, { signal: AbortSignal.timeout(20_000) });
@@ -105,8 +111,73 @@ async function readPrevious(): Promise<InstagramData> {
   }
 }
 
+/**
+ * Explica en el log qué tipo de token llegó, sin mostrarlo. Los tokens de
+ * "Instagram API with Instagram Login" empiezan con "IG"; los que empiezan
+ * con "EAA" son de Facebook y graph.instagram.com los rechaza.
+ */
+function describeToken(token: string): void {
+  const kind = token.startsWith('IG')
+    ? 'de Instagram'
+    : token.startsWith('EAA')
+      ? 'de Facebook'
+      : 'de tipo desconocido';
+
+  console.log(`Token ${kind}, ${token.length} caracteres.`);
+
+  if (!token.startsWith('IG') && !token.startsWith('EAA')) {
+    console.warn(
+      'El token debe empezar con "IG" (o "EAA" si es de Facebook). Genéralo en ' +
+        'Meta for Developers y pégalo completo en INSTAGRAM_ACCESS_TOKEN.'
+    );
+  }
+}
+
+/**
+ * Con un token de Facebook hay que saber el ID de la cuenta de Instagram.
+ * Se toma de INSTAGRAM_USER_ID o de la página de Facebook vinculada.
+ */
+async function findInstagramId(token: string): Promise<string> {
+  const fromEnv = process.env.INSTAGRAM_USER_ID?.trim();
+  if (fromEnv) return fromEnv;
+
+  // Token de página: la propia página trae su cuenta de Instagram.
+  try {
+    const page = await api<any>(
+      '/me',
+      { fields: 'instagram_business_account', access_token: token },
+      FACEBOOK_API
+    );
+    if (page.instagram_business_account?.id) return page.instagram_business_account.id;
+  } catch {
+    // Es un token de usuario: se buscan sus páginas.
+  }
+
+  const pages = await api<{ data: any[] }>(
+    '/me/accounts',
+    { fields: 'name,instagram_business_account{id,username}', access_token: token },
+    FACEBOOK_API
+  );
+  const linked = (pages.data ?? []).find((item) => item.instagram_business_account?.id);
+
+  if (!linked) {
+    throw new Error(
+      'el token de Facebook no ve ninguna página con una cuenta de Instagram ' +
+        'vinculada (faltan permisos pages_show_list e instagram_basic, o la ' +
+        'cuenta no está conectada a una página)'
+    );
+  }
+
+  console.log(
+    `Cuenta de Instagram encontrada por la página "${linked.name}": ` +
+      `@${linked.instagram_business_account.username}.`
+  );
+  return linked.instagram_business_account.id;
+}
+
 async function main() {
-  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.trim();
+  // Quitar espacios, saltos de línea o comillas que se cuelan al pegarlo.
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.replace(/[\s"'`]/g, '');
 
   if (!token) {
     console.log('Sin INSTAGRAM_ACCESS_TOKEN: se usan los datos de Instagram ya guardados.');
@@ -114,22 +185,38 @@ async function main() {
   }
 
   console.log('Sincronizando Instagram...');
-  await refreshToken(token);
+  describeToken(token);
 
-  const me = await api<any>('/me', {
-    fields:
-      'username,name,biography,website,profile_picture_url,followers_count,follows_count,media_count',
-    access_token: token,
-  });
+  // Token de Instagram: graph.instagram.com y "me". Token de Facebook:
+  // graph.facebook.com con el ID de la cuenta de Instagram.
+  const isFacebook = token.startsWith('EAA');
+  const base = isFacebook ? FACEBOOK_API : INSTAGRAM_API;
+  const user = isFacebook ? await findInstagramId(token) : 'me';
+
+  if (!isFacebook) await refreshToken(token);
+
+  const me = await api<any>(
+    `/${user}`,
+    {
+      fields:
+        'username,name,biography,website,profile_picture_url,followers_count,follows_count,media_count',
+      access_token: token,
+    },
+    base
+  );
 
   // like_count y comments_count no siempre vienen (p. ej. si se ocultan los
   // me gusta); se piden pero son opcionales.
-  const media = await api<{ data: any[] }>('/me/media', {
-    fields:
-      'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count',
-    limit: String(POST_LIMIT),
-    access_token: token,
-  });
+  const media = await api<{ data: any[] }>(
+    `/${user}/media`,
+    {
+      fields:
+        'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count',
+      limit: String(POST_LIMIT),
+      access_token: token,
+    },
+    base
+  );
 
   let picture = '';
   if (me.profile_picture_url) {

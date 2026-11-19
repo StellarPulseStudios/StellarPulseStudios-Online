@@ -1,0 +1,11 @@
+// Configuración del Worker que sirve el sitio estático (carpeta dist/).
+// Sin este archivo, `wrangler deploy` en Cloudflare intentaba configurar el
+// proyecto solo (instalaba el adaptador de Astro y volvía a construir todo).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stellarpulsestudios-web",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}

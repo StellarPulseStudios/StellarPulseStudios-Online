@@ -2,7 +2,8 @@ import { Client } from '@notionhq/client';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import sharp from 'sharp';
+import sharp, { type OutputInfo } from 'sharp';
+import heicConvert from 'heic-convert';
 
 
 export interface SocialLink {
@@ -283,16 +284,31 @@ async function downloadImage(
     // en el celular durante el evento.
     const size = MAX_SIZE[kind];
 
-    const info = await sharp(buffer, { animated: false })
-      .rotate()
-      .resize({
-        width: size,
-        height: size,
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .webp({ quality: kind === 'logo' ? 90 : 80 })
-      .toFile(filePath);
+    const optimize = (input: Buffer) =>
+      sharp(input, { animated: false })
+        .rotate()
+        .resize({
+          width: size,
+          height: size,
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({ quality: kind === 'logo' ? 90 : 80 })
+        .toFile(filePath);
+
+    let info: OutputInfo;
+
+    try {
+      info = await optimize(buffer);
+    } catch (error) {
+      // Las fotos HEIC del iPhone usan HEVC, que sharp no trae por patentes.
+      // Se convierten primero a JPEG con un decodificador en JavaScript.
+      if (!String(error).includes('HEVC')) throw error;
+
+      const jpeg = await heicConvert({ buffer, format: 'JPEG', quality: 0.9 });
+      info = await optimize(Buffer.from(jpeg));
+      console.log(`Imagen HEIC convertida: ${filename}`);
+    }
 
     return { src: publicPath, width: info.width, height: info.height };
   } catch (error) {

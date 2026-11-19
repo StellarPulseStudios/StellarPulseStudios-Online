@@ -57,10 +57,20 @@ descargan, se redimensionan (logos a 400 px, fotos a 1600 px) y se convierten
 a WebP en `public/uploads/`. El nombre de cada archivo se basa en la ruta del
 archivo en Notion, de modo que no cambia entre sincronizaciones.
 
+Las fotos HEIC del iPhone se convierten a JPEG antes de optimizarlas, porque
+`sharp` no incluye el decodificador HEVC.
+
 ## Publicación (Cloudflare Workers)
 
 Cada push a `master` dispara un build en Cloudflare (Workers Builds), que
-ejecuta `npm run build` y publica la carpeta `dist/`.
+ejecuta `npm run build` y publica la carpeta `dist/` con la configuración de
+[`wrangler.jsonc`](wrangler.jsonc).
+
+En el Worker (*Settings → Builds*) los comandos deben ser exactamente:
+
+- **Build command:** `npm run build` (ya sincroniza Notion e Instagram; no
+  agregues `npm run sync:notion` antes o se sincroniza dos veces).
+- **Deploy command:** `npx wrangler deploy`.
 
 Variables de **build** del Worker (*Settings → Builds → Variables*):
 `NOTION_API_KEY`, `NOTION_DATABASE_ID`, `SITE_URL`
@@ -109,7 +119,14 @@ Para conectarla (una sola vez, la cuenta debe ser profesional):
 3. En Cloudflare: Worker → *Settings → Builds → Variables* → agrega el
    secreto `INSTAGRAM_ACCESS_TOKEN` con ese token y vuelve a publicar.
 
-El token dura 60 días y cada build lo renueva. Si Instagram falla o falta el
+También sirve un token de Facebook (empieza con `EAA`) si la cuenta de
+Instagram está vinculada a una página de Facebook y el token tiene los permisos
+`instagram_basic`, `pages_show_list` y `pages_read_engagement`. Conviene un
+token de **página** de larga duración, porque el del Graph API Explorer caduca
+en una o dos horas. El ID de la cuenta se busca solo; si falla, ponlo en
+`INSTAGRAM_USER_ID`.
+
+El token de Instagram (`IG…`) dura 60 días y cada build lo renueva. Si Instagram falla o falta el
 token, el build no se detiene: se conservan los últimos datos y la sección se
 muestra con el botón y el QR. Si en el log del build aparece «Instagram
 devolvió un token nuevo», genera otro token en Meta y reemplázalo en Cloudflare.
