@@ -119,7 +119,7 @@ Para conectarla (una sola vez, la cuenta debe ser profesional):
 3. En Cloudflare: Worker → *Settings → Builds → Variables* → agrega el
    secreto `INSTAGRAM_ACCESS_TOKEN` con ese token y vuelve a publicar.
 
-También sirve un token de Facebook (empieza con `EAA`) si la cuenta de
+También sirve un token de Facebook (empieza con `EA`, por ejemplo `EAA…` o `EABA…`) si la cuenta de
 Instagram está vinculada a una página de Facebook y el token tiene los permisos
 `instagram_basic`, `pages_show_list` y `pages_read_engagement`. Conviene un
 token de **página** de larga duración, porque el del Graph API Explorer caduca

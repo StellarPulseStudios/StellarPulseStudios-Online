@@ -21,7 +21,7 @@ import sharp from 'sharp';
 import type { InstagramData, InstagramPost } from '../src/lib/instagram';
 
 const INSTAGRAM_API = 'https://graph.instagram.com';
-// Tokens "EAA…" (Instagram API con inicio de sesión de Facebook).
+// Tokens "EA…" (EAA…, EABA…) (Instagram API con inicio de sesión de Facebook).
 const FACEBOOK_API = 'https://graph.facebook.com/v23.0';
 const POST_LIMIT = 12;
 
@@ -114,21 +114,21 @@ async function readPrevious(): Promise<InstagramData> {
 /**
  * Explica en el log qué tipo de token llegó, sin mostrarlo. Los tokens de
  * "Instagram API with Instagram Login" empiezan con "IG"; los que empiezan
- * con "EAA" son de Facebook y graph.instagram.com los rechaza.
+ * con "EA" (EAA…, EABA…) son de Facebook y graph.instagram.com los rechaza.
  */
 function describeToken(token: string): void {
   const kind = token.startsWith('IG')
     ? 'de Instagram'
-    : token.startsWith('EAA')
+    : token.startsWith('EA')
       ? 'de Facebook'
       : 'de tipo desconocido';
 
   // Las primeras 3 letras no permiten usar el token y ayudan a ver qué se pegó.
   console.log(`Token ${kind}, empieza con "${token.slice(0, 3)}", ${token.length} caracteres.`);
 
-  if (!token.startsWith('IG') && !token.startsWith('EAA')) {
+  if (!token.startsWith('IG') && !token.startsWith('EA')) {
     console.warn(
-      'El token debe empezar con "IG" (o "EAA" si es de Facebook). Genéralo en ' +
+      'El token debe empezar con "IG" (o "EA" si es de Facebook). Genéralo en ' +
         'Meta for Developers y pégalo completo en INSTAGRAM_ACCESS_TOKEN.'
     );
   }
@@ -180,7 +180,7 @@ async function main() {
   // Quitar espacios, saltos de línea o comillas que se cuelan al pegarlo, y
   // texto de más alrededor del token ("Bearer ", "access_token=", etc.).
   const raw = process.env.INSTAGRAM_ACCESS_TOKEN?.replace(/[\s"'`]/g, '') ?? '';
-  const token = raw.match(/(?:EAA|IG)[A-Za-z0-9_-]{20,}/)?.[0] ?? raw;
+  const token = raw.match(/(?:EA|IG)[A-Za-z0-9_-]{20,}/)?.[0] ?? raw;
 
   if (!token) {
     console.log('Sin INSTAGRAM_ACCESS_TOKEN: se usan los datos de Instagram ya guardados.');
@@ -192,7 +192,7 @@ async function main() {
 
   // Token de Instagram: graph.instagram.com y "me". Token de Facebook:
   // graph.facebook.com con el ID de la cuenta de Instagram.
-  const isFacebook = token.startsWith('EAA');
+  const isFacebook = token.startsWith('EA');
   const base = isFacebook ? FACEBOOK_API : INSTAGRAM_API;
   const user = isFacebook ? await findInstagramId(token) : 'me';
 
