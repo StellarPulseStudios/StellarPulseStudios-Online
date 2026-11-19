@@ -105,8 +105,32 @@ async function readPrevious(): Promise<InstagramData> {
   }
 }
 
+/**
+ * Explica en el log qué tipo de token llegó, sin mostrarlo. Los tokens de
+ * "Instagram API with Instagram Login" empiezan con "IG"; los que empiezan
+ * con "EAA" son de Facebook y graph.instagram.com los rechaza.
+ */
+function describeToken(token: string): void {
+  const kind = token.startsWith('IG')
+    ? 'de Instagram'
+    : token.startsWith('EAA')
+      ? 'de Facebook (no sirve aquí)'
+      : 'de tipo desconocido';
+
+  console.log(`Token ${kind}, ${token.length} caracteres.`);
+
+  if (!token.startsWith('IG')) {
+    console.warn(
+      'El token debe empezar con "IG". Genéralo en Meta for Developers → tu app → ' +
+        'Instagram → Configuración de la API con inicio de sesión de Instagram → ' +
+        'Generar token, y pégalo completo en INSTAGRAM_ACCESS_TOKEN.'
+    );
+  }
+}
+
 async function main() {
-  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.trim();
+  // Quitar espacios, saltos de línea o comillas que se cuelan al pegarlo.
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.replace(/[\s"'`]/g, '');
 
   if (!token) {
     console.log('Sin INSTAGRAM_ACCESS_TOKEN: se usan los datos de Instagram ya guardados.');
@@ -114,6 +138,7 @@ async function main() {
   }
 
   console.log('Sincronizando Instagram...');
+  describeToken(token);
   await refreshToken(token);
 
   const me = await api<any>('/me', {

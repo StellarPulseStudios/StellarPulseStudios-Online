@@ -28,3 +28,6 @@ pnpm-debug.log*
 # uploads
 public/uploads/*
 !public/uploads/.gitkeep
+
+# wrangler
+.wrangler/

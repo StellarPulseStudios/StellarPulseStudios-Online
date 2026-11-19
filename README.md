@@ -57,10 +57,20 @@ descargan, se redimensionan (logos a 400 px, fotos a 1600 px) y se convierten
 a WebP en `public/uploads/`. El nombre de cada archivo se basa en la ruta del
 archivo en Notion, de modo que no cambia entre sincronizaciones.
 
+Las fotos HEIC del iPhone se convierten a JPEG antes de optimizarlas, porque
+`sharp` no incluye el decodificador HEVC.
+
 ## Publicación (Cloudflare Workers)
 
 Cada push a `master` dispara un build en Cloudflare (Workers Builds), que
-ejecuta `npm run build` y publica la carpeta `dist/`.
+ejecuta `npm run build` y publica la carpeta `dist/` con la configuración de
+[`wrangler.jsonc`](wrangler.jsonc).
+
+En el Worker (*Settings → Builds*) los comandos deben ser exactamente:
+
+- **Build command:** `npm run build` (ya sincroniza Notion e Instagram; no
+  agregues `npm run sync:notion` antes o se sincroniza dos veces).
+- **Deploy command:** `npx wrangler deploy`.
 
 Variables de **build** del Worker (*Settings → Builds → Variables*):
 `NOTION_API_KEY`, `NOTION_DATABASE_ID`, `SITE_URL`

@@ -17,6 +17,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@notionhq/client": "^2.3.0",
     "astro": "^7.4.2",
+    "heic-convert": "^2.1.0",
     "qrcode": "^1.5.4",
     "sharp": "^0.35.5"
   },
@@ -24,6 +25,7 @@
     "@types/node": "^26.6.5",
     "@types/qrcode": "^1.5.5",
     "dotenv": "^18.0.9",
-    "tsx": "^4.23.15"
+    "tsx": "^4.23.15",
+    "wrangler": "^4.157.0"
   }
 }
