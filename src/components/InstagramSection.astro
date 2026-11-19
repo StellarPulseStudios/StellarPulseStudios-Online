@@ -1,0 +1,668 @@
+---
+// Sección "Síguenos en Instagram" del inicio: un teléfono con nuestro perfil
+// y las últimas publicaciones (sincronizadas en cada build), un botón para
+// seguir y un QR para quien lo ve desde la computadora.
+import QRCode from 'qrcode';
+
+import { contact } from '../data/site';
+import { formatCount, instagram } from '../lib/instagram';
+
+const profile = instagram.profile;
+const posts = instagram.posts.slice(0, 12);
+const latest = posts[0];
+
+const username =
+  profile?.username ?? contact.instagramHandle.replace(/^@/, '');
+const displayName = profile?.name || 'Stellar Pulse Studios';
+const bio =
+  profile?.biography ||
+  'Experiencias que no son un bazar más: música en vivo, posadas y exposiciones con emprendedores locales de Toluca.';
+const picture = profile?.picture || '/brand/stellar-pulse-logo.webp';
+
+const qrSvg = await QRCode.toString(contact.instagram, {
+  type: 'svg',
+  margin: 0,
+  errorCorrectionLevel: 'M',
+  color: { dark: '#080b18', light: '#ffffff' },
+});
+
+function shortCaption(caption: string): string {
+  const firstLine = caption.split('\n')[0].trim();
+  return firstLine.length > 60 ? `${firstLine.slice(0, 57)}…` : firstLine;
+}
+---
+
+<section class="ig-section" aria-labelledby="ig-title">
+  <div class="container ig-grid">
+    <div class="ig-copy">
+      <span class="eyebrow">Síguenos</span>
+      <h2 class="ig-title" id="ig-title">
+        Lo que pasa en Stellar Pulse, <em>en vivo</em> en Instagram.
+      </h2>
+      <p>
+        Convocatorias para exponer, el lineup de cada noche, quiénes participan
+        y las fotos de después. Si estuviste ahí, búscate.
+      </p>
+      <span class="ig-handle">@{username}</span>
+      <div>
+        <a class="ig-button" href={contact.instagram} target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor"></circle>
+          </svg>
+          Seguir en Instagram
+        </a>
+      </div>
+      <div class="ig-qr-card">
+        <div class="ig-qr" role="img" aria-label={`Código QR al perfil @${username}`} set:html={qrSvg} />
+        <div>
+          <strong>¿Estás en la computadora?</strong>
+          <small>Escanea con la cámara de tu celular y te abre el perfil directo en la app.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="ig-stage">
+      <div class="ig-phone-wrap">
+      {latest && (
+        <a class="ig-float ig-float-new" href={latest.permalink} target="_blank" rel="noopener">
+          <img class="ig-float-thumb" src={latest.image} alt="" width="36" height="36" loading="lazy" />
+          <span>
+            <b>Última publicación</b>
+            <small data-ig-time={latest.timestamp}>{shortCaption(latest.caption) || 'Ver en Instagram'}</small>
+          </span>
+        </a>
+      )}
+      {latest && latest.likes !== null && latest.likes > 0 && (
+        <div class="ig-float ig-float-likes">
+          <span class="ig-heart" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3.1 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.8 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+          <span><b>{formatCount(latest.likes)}</b> me gusta<small>en la última publicación</small></span>
+        </div>
+      )}
+
+      <div class="ig-phone">
+        <div class="ig-screen">
+          <div class="ig-island" aria-hidden="true"></div>
+          <div class="ig-status" aria-hidden="true"><span data-ig-clock>9:41</span><span>●●● ▮</span></div>
+          <div class="ig-top">
+            <b>{username}</b>
+            <span class="ig-live"><i aria-hidden="true"></i>En vivo</span>
+          </div>
+
+          <div class="ig-body">
+            <div class="ig-profile">
+              <span class="ig-avatar"><img src={picture} alt="" width="70" height="70" /></span>
+              <dl class="ig-counts">
+                <div><dt>publicaciones</dt><dd>{formatCount(profile?.posts ?? null)}</dd></div>
+                <div><dt>seguidores</dt><dd>{formatCount(profile?.followers ?? null)}</dd></div>
+                <div><dt>seguidos</dt><dd>{formatCount(profile?.following ?? null)}</dd></div>
+              </dl>
+            </div>
+            <p class="ig-bio"><b>{displayName}</b><br />{bio}</p>
+            <a class="ig-follow" href={contact.instagram} target="_blank" rel="noopener">Seguir</a>
+
+            <div class="ig-tabs" aria-hidden="true"><span class="on">▦</span><span>▷</span><span>☺</span></div>
+
+            {posts.length > 0 ? (
+              <ul class="ig-posts" aria-label="Últimas publicaciones">
+                {posts.map((post) => (
+                  <li>
+                    <a href={post.permalink} target="_blank" rel="noopener" aria-label={shortCaption(post.caption) || 'Publicación en Instagram'}>
+                      <img src={post.image} alt="" width="160" height="200" loading="lazy" />
+                      {post.type === 'VIDEO' && (
+                        <svg class="ig-kind" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg>
+                      )}
+                      {post.type === 'CAROUSEL_ALBUM' && (
+                        <svg class="ig-kind" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M4 4h10v10H4zM10 10h10v10H10z" opacity=".9"></path></svg>
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <a class="ig-empty" href={contact.instagram} target="_blank" rel="noopener">
+                <span class="ig-empty-grid" aria-hidden="true">
+                  {Array.from({ length: 9 }).map(() => <i></i>)}
+                </span>
+                <span class="ig-empty-text">Mira nuestras publicaciones en Instagram</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Hora real en el teléfono y "hace X" de la última publicación, calculados
+  // en el navegador para que no queden viejos entre builds.
+  const clock = document.querySelector<HTMLElement>('[data-ig-clock]');
+  const tick = () => {
+    if (!clock) return;
+    const now = new Date();
+    clock.textContent = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
+  tick();
+  setInterval(tick, 30_000);
+
+  const time = document.querySelector<HTMLElement>('[data-ig-time]');
+  if (time?.dataset.igTime) {
+    const minutes = Math.round((Date.now() - Date.parse(time.dataset.igTime)) / 60_000);
+    const rtf = new Intl.RelativeTimeFormat('es', { numeric: 'auto' });
+    let label: string;
+    if (minutes < 60) label = rtf.format(-Math.max(minutes, 1), 'minute');
+    else if (minutes < 1440) label = rtf.format(-Math.round(minutes / 60), 'hour');
+    else if (minutes < 43_200) label = rtf.format(-Math.round(minutes / 1440), 'day');
+    else label = rtf.format(-Math.round(minutes / 43_200), 'month');
+    time.textContent = label;
+  }
+</script>
+
+<style>
+  .ig-section {
+    position: relative;
+    overflow: hidden;
+    padding: 70px 0 90px;
+    --ig1: #feda75;
+    --ig2: #fa7e1e;
+    --ig3: #d62976;
+    --ig4: #962fbf;
+    --ig5: #4f5bd5;
+  }
+
+  .ig-section::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 640px;
+    height: 640px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(214, 41, 118, 0.26), rgba(150, 47, 191, 0.1) 45%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .ig-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .ig-copy {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+    min-width: 0;
+  }
+
+  .ig-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .ig-title em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--ig1), var(--ig2) 30%, var(--ig3) 60%, var(--ig4));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .ig-copy p {
+    max-width: 44ch;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .ig-handle {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .ig-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: linear-gradient(100deg, var(--ig2), var(--ig3) 45%, var(--ig4) 80%, var(--ig5));
+    box-shadow: 0 10px 30px rgba(214, 41, 118, 0.35);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .ig-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(214, 41, 118, 0.5);
+  }
+
+  .ig-button:focus-visible,
+  .ig-float:focus-visible,
+  .ig-posts a:focus-visible,
+  .ig-follow:focus-visible,
+  .ig-empty:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .ig-qr-card {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    max-width: 360px;
+    padding: 12px 16px 12px 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(17, 23, 41, 0.7);
+  }
+
+  .ig-qr {
+    flex: none;
+    width: 84px;
+    height: 84px;
+    padding: 7px;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .ig-qr :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ig-qr-card strong {
+    font-size: 0.9rem;
+  }
+
+  .ig-qr-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  /* ===== Teléfono ===== */
+  .ig-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 20px 0;
+  }
+
+  .ig-phone-wrap {
+    position: relative;
+    width: 300px;
+    max-width: 100%;
+  }
+
+  .ig-phone {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 300 / 620;
+    padding: 11px;
+    border-radius: 46px;
+    background: linear-gradient(145deg, #3a3f52, #14161f 40%, #2a2e3d);
+    box-shadow:
+      0 0 0 1.5px #4b5168 inset,
+      0 40px 80px rgba(0, 0, 0, 0.6),
+      0 0 90px rgba(214, 41, 118, 0.25);
+  }
+
+  .ig-screen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 36px;
+    background: #000;
+    color: #f5f5f5;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .ig-island {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    width: 92px;
+    height: 26px;
+    border-radius: 20px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+
+  .ig-status {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .ig-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 14px 8px;
+  }
+
+  .ig-top b {
+    overflow: hidden;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ig-live {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 7px;
+    border: 1px solid rgba(255, 48, 64, 0.5);
+    border-radius: 999px;
+    background: rgba(255, 48, 64, 0.18);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ig-live i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff3040;
+    animation: ig-pulse 1.6s infinite;
+  }
+
+  @keyframes ig-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 48, 64, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(255, 48, 64, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 48, 64, 0); }
+  }
+
+  .ig-body {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .ig-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 14px 10px;
+  }
+
+  .ig-avatar {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    padding: 3px;
+    border-radius: 50%;
+    background: conic-gradient(from 210deg, var(--ig1), var(--ig2), var(--ig3), var(--ig4), var(--ig5), var(--ig1));
+  }
+
+  .ig-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #000;
+    border-radius: 50%;
+    background: #0b0e1c;
+    object-fit: cover;
+  }
+
+  .ig-counts {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    text-align: center;
+  }
+
+  .ig-counts div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .ig-counts dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ig-counts dt {
+    font-size: 8.5px;
+    letter-spacing: -0.01em;
+  }
+
+  .ig-bio {
+    display: -webkit-box;
+    margin: 0;
+    padding: 0 14px 10px;
+    overflow: hidden;
+    font-size: 11.5px;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+
+  .ig-follow {
+    display: block;
+    margin: 0 14px 12px;
+    padding: 6px 0;
+    border-radius: 8px;
+    background: #0095f6;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .ig-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid #262626;
+  }
+
+  .ig-tabs span {
+    display: grid;
+    place-items: center;
+    padding: 8px 0;
+    color: #a8a8a8;
+  }
+
+  .ig-tabs span.on {
+    box-shadow: inset 0 1px 0 #fff;
+    color: #fff;
+  }
+
+  .ig-posts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ig-posts a {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: #1a1a1a;
+  }
+
+  .ig-posts img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.2s;
+  }
+
+  .ig-posts a:hover img {
+    filter: brightness(1.15);
+  }
+
+  .ig-kind {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 12px;
+    height: 12px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+  }
+
+  .ig-empty {
+    position: relative;
+    display: block;
+    color: #fff;
+  }
+
+  .ig-empty-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+  }
+
+  .ig-empty-grid i {
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, #1b2a6b, #0b0f2a 70%);
+  }
+
+  .ig-empty-grid i:nth-child(3n + 2) {
+    background: linear-gradient(200deg, rgba(244, 198, 106, 0.7), #5b2a0c);
+  }
+
+  .ig-empty-grid i:nth-child(4n) {
+    background: linear-gradient(170deg, #be185d, #4c1d95);
+  }
+
+  .ig-empty-text {
+    position: absolute;
+    inset: 30% 18px auto;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* Burbujas junto al teléfono */
+  .ig-float {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 230px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(17, 23, 41, 0.85);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    color: var(--text);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .ig-float small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  .ig-float-thumb {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    object-fit: cover;
+  }
+
+  .ig-float-new {
+    top: 62%;
+    left: -130px;
+    animation: ig-bob 6s ease-in-out infinite;
+  }
+
+  .ig-float-likes {
+    top: 40%;
+    right: -120px;
+    animation: ig-bob 7s ease-in-out -2s infinite;
+  }
+
+  .ig-heart {
+    display: grid;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ig3), var(--ig2));
+  }
+
+  @keyframes ig-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @media (max-width: 900px) {
+    .ig-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ig-section {
+      padding: 50px 0 70px;
+    }
+
+    .ig-float {
+      max-width: 180px;
+    }
+
+    .ig-float-new {
+      top: auto;
+      bottom: 6%;
+      left: -8px;
+    }
+
+    .ig-float-likes {
+      top: 46%;
+      right: -8px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ig-live i,
+    .ig-float {
+      animation: none;
+    }
+  }
+</style>
