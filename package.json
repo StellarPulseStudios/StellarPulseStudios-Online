@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "sync:notion": "tsx scripts/sync-notion.ts",
-    "build": "npm run sync:notion && astro build",
+    "sync:instagram": "tsx scripts/sync-instagram.ts",
+    "build": "npm run sync:notion && npm run sync:instagram && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -16,10 +17,12 @@
     "@astrojs/sitemap": "^3.7.4",
     "@notionhq/client": "^2.3.0",
     "astro": "^7.4.2",
+    "qrcode": "^1.5.4",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "@types/qrcode": "^1.5.5",
     "dotenv": "^18.0.9",
     "tsx": "^4.23.15"
   }

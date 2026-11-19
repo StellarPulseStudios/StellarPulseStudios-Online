@@ -29,6 +29,7 @@ npm run dev            # http://localhost:4321
 | `NOTION_API_KEY`     | Token de la integración interna de Notion.                     |
 | `NOTION_DATABASE_ID` | ID de la base de datos de emprendimientos.                     |
 | `SITE_URL`           | Dominio público (sitemap, URL canónica, vista previa en redes). |
+| `INSTAGRAM_ACCESS_TOKEN` | Opcional. Token de la cuenta de Instagram para la sección del inicio. |
 
 ## Base de datos de Notion
 
@@ -62,8 +63,8 @@ Cada push a `master` dispara un build en Cloudflare (Workers Builds), que
 ejecuta `npm run build` y publica la carpeta `dist/`.
 
 Variables de **build** del Worker (*Settings → Builds → Variables*):
-`NOTION_API_KEY`, `NOTION_DATABASE_ID` y `SITE_URL`
-(`https://stellarpulsestudios.com`).
+`NOTION_API_KEY`, `NOTION_DATABASE_ID`, `SITE_URL`
+(`https://stellarpulsestudios.com`) e `INSTAGRAM_ACCESS_TOKEN` (como secreto).
 
 ### Dominio
 
@@ -88,6 +89,30 @@ El sitio es estático: los cambios en Notion aparecen después del siguiente bui
 3. El workflow [`Reconstruir desde Notion`](.github/workflows/rebuild-from-notion.yml)
    llama al hook cada 3 horas. Para publicar al momento, ábrelo en la pestaña
    **Actions** y pulsa **Run workflow**.
+
+### Instagram
+
+La sección «Síguenos» del inicio muestra el perfil de
+[@stellarpulse_studios](https://www.instagram.com/stellarpulse_studios/) y sus
+últimas 12 publicaciones. `scripts/sync-instagram.ts` las trae en cada build
+con la API oficial de Instagram, guarda los datos en `src/data/instagram.json`
+y descarga las fotos a `public/uploads/instagram/`. Se actualiza junto con
+Notion (cada 3 horas).
+
+Para conectarla (una sola vez, la cuenta debe ser profesional):
+
+1. En [Meta for Developers](https://developers.facebook.com/apps/) crea una app
+   de tipo *Empresa* con el caso de uso de la API de Instagram.
+2. En la app: *Instagram → Configuración de la API con inicio de sesión de
+   Instagram → Generar tokens de acceso* → **Agregar cuenta**, entra con
+   @stellarpulse_studios y pulsa **Generar token**. Copia el token.
+3. En Cloudflare: Worker → *Settings → Builds → Variables* → agrega el
+   secreto `INSTAGRAM_ACCESS_TOKEN` con ese token y vuelve a publicar.
+
+El token dura 60 días y cada build lo renueva. Si Instagram falla o falta el
+token, el build no se detiene: se conservan los últimos datos y la sección se
+muestra con el botón y el QR. Si en el log del build aparece «Instagram
+devolvió un token nuevo», genera otro token en Meta y reemplázalo en Cloudflare.
 
 ## Archivos de diseño
 
