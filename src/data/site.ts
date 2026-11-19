@@ -14,8 +14,8 @@ export function mailto(subject: string): string {
 
 export const currentEvent = {
   name: 'Stellar Nights',
-  edition: 'Christmas Edition',
-  fullName: 'Stellar Nights · Christmas Edition',
+  edition: 'Temporada Navideña',
+  fullName: 'Stellar Nights · Temporada Navideña',
   path: '/eventos/stellar-nights/',
   ticketsUrl:
     'https://www.tickean.com.mx/eventos/stellar-nights-christmas-edition',
