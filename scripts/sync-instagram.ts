@@ -123,7 +123,8 @@ function describeToken(token: string): void {
       ? 'de Facebook'
       : 'de tipo desconocido';
 
-  console.log(`Token ${kind}, ${token.length} caracteres.`);
+  // Las primeras 3 letras no permiten usar el token y ayudan a ver qué se pegó.
+  console.log(`Token ${kind}, empieza con "${token.slice(0, 3)}", ${token.length} caracteres.`);
 
   if (!token.startsWith('IG') && !token.startsWith('EAA')) {
     console.warn(
@@ -176,8 +177,10 @@ async function findInstagramId(token: string): Promise<string> {
 }
 
 async function main() {
-  // Quitar espacios, saltos de línea o comillas que se cuelan al pegarlo.
-  const token = process.env.INSTAGRAM_ACCESS_TOKEN?.replace(/[\s"'`]/g, '');
+  // Quitar espacios, saltos de línea o comillas que se cuelan al pegarlo, y
+  // texto de más alrededor del token ("Bearer ", "access_token=", etc.).
+  const raw = process.env.INSTAGRAM_ACCESS_TOKEN?.replace(/[\s"'`]/g, '') ?? '';
+  const token = raw.match(/(?:EAA|IG)[A-Za-z0-9_-]{20,}/)?.[0] ?? raw;
 
   if (!token) {
     console.log('Sin INSTAGRAM_ACCESS_TOKEN: se usan los datos de Instagram ya guardados.');
