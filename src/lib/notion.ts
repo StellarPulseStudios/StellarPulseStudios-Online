@@ -32,6 +32,8 @@ export interface Exhibitor {
   promo: string;
   code: string;
   socialLinks: SocialLink[];
+  /** Columna "Priority" de Notion: menor número aparece primero. */
+  priority: number | null;
 }
 
 type NotionFile = {
@@ -97,6 +99,21 @@ function getText(property: any): string {
 
 function getSelect(property: any): string {
   return property?.select?.name ?? '';
+}
+
+/** Lee un número de Notion (tipo Número, Fórmula o texto con un número). */
+function getNumber(property: any): number | null {
+  if (!property) return null;
+
+  let value: unknown = null;
+
+  if (property.type === 'number') value = property.number;
+  else if (property.type === 'formula') value = property.formula?.number;
+  else value = getText(property).trim() || null;
+
+  const parsed = typeof value === 'number' ? value : Number(value);
+
+  return value !== null && Number.isFinite(parsed) ? parsed : null;
 }
 
 function getUrl(property: any): string {
@@ -402,13 +419,21 @@ export async function getExhibitors(): Promise<Exhibitor[]> {
       promo: getText(props.Promo),
       code: getText(props.Código),
       socialLinks,
+      priority: getNumber(props.Priority),
     });
   }
 
-  // Orden alfabético estable (Notion no garantiza un orden fijo).
-  exhibitors.sort((a, b) =>
-    a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
-  );
+  // Orden manual con la columna "Priority" (menor primero). Los que no
+  // tienen número van al final. Empates y sin número: orden alfabético,
+  // porque Notion no garantiza un orden fijo.
+  exhibitors.sort((a, b) => {
+    const pa = a.priority ?? Number.POSITIVE_INFINITY;
+    const pb = b.priority ?? Number.POSITIVE_INFINITY;
+
+    if (pa !== pb) return pa - pb;
+
+    return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
+  });
 
   // Evitar que dos marcas compartan el mismo slug.
   const usedSlugs = new Set<string>();
